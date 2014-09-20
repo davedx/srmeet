@@ -4,34 +4,16 @@
 <head>
     <title>Meet&Talk</title>
     <script type="text/javascript" src="javascript/lib/hello.min.js"></script>
+    
+    <script type="text/javascript" src="javascript/lib/conf.js"></script>
+    <script type="text/javascript" src="javascript/lib/fbservice.js"></script>
+    <script type="text/javascript" src="javascript/lib/main.js"></script>
 </head>
-
-<body>
-    <button onclick="hello('facebook').login()">Login with facebook</button>
-
+<body>  
+	<button id ='loginButton' onclick="mainApp.toggleLogin()">Login</button>
+    <div id='profile'></div>
+    <script type="text/javascript">
+    	mainApp.init();
+    </script>
 </body>
-<script type="text/javascript">
-	hello.init({
-	    facebook: 637163226405149
-	}, {
-	    redirect_uri: 'index.html',
-	    display: 'page'
-	});
-	// hello.on('auth.login', function(auth) {
-
- //    // call user information, for the given network
- //    hello(auth.network).api('/me').then(function(r) {
-	//         // Inject it into the container
-	//         var label = document.getElementById("profile_" + auth.network);
-	//         if (!label) {
-	//             label = document.createElement('div');
-	//             label.id = "profile_" + auth.network;
-	//             document.getElementById('profile').appendChild(label);
-	//         }
-	//         label.innerHTML = '<img src="' + r.thumbnail + '" /> Hey ' + r.name;
-	//     });
-	// });
-
-</script>
-
 </html>
