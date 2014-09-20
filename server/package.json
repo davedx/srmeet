@@ -3,7 +3,9 @@
   "description": "",
   "version": "0.0.1",
   "dependencies": {
-    "mongodb": "1.4.12",
-    "express": "4.9.4"
+    "mongodb": "^1.4.12",
+    "express": "^4.9.4",
+    "q": "^1.0.1",
+    "body-parser": "^1.8.3"
   }
 }
