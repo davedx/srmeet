@@ -29,7 +29,10 @@ var mainApp = (function(){
 	            {
 	             console.log('Authorization failed.');
 	            }
-	         },{scope: 'email'});			
+	         },{
+	         		scope: 'email,user_birthday,user_location', 	
+	     		});	
+	         
 		},
 
 		getUserData: function(callback){
