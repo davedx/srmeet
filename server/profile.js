@@ -15,6 +15,16 @@ var setRoutes = function(app) {
 		});
 	});
 
+	// get a user profile
+	app.get('/profiles/:id', function (req, res) {
+		console.log("Responding to /profiles/:id");
+
+		var collection = app.db.collection('profiles');
+		collection.findOne({_id: ObjectID(req.params.id)}, function(err, results) {
+			res.send(results);
+		});
+	});
+
 	// Create a new profile.
 	app.post('/profiles/new', function (req, res) {
 		
