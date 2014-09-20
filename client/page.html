@@ -18,6 +18,8 @@
 
 	<script type="text/javascript">
 
+		var apiBaseURL = "http://212.142.46.137/doh";
+
     setTimeout(function(){
 
         mainApp.getStatus(function(response){
@@ -55,7 +57,7 @@
 
 	var getUserByFacebookId = function(facebook_id, callback) {
 		console.log("getUserByFacebookId");
-		$.getJSON("http://212.142.46.137/doh/profiles/facebook/"+facebook_id, function(jsondata) {
+		$.getJSON(apiBaseURL + "/profiles/facebook/"+facebook_id, function(jsondata) {
 			console.log(jsondata);
 			userdata = jsondata;
 			callback && callback(jsondata);
@@ -67,7 +69,7 @@
 
 	var getFlightCodes = function(callback){
 		console.log("getFlightCodes");
-		$.getJSON("http://212.142.46.137/doh/flights", function(jsondata) {
+		$.getJSON(apiBaseURL + "/flights", function(jsondata) {
 			console.log(jsondata);
 			callback && callback(jsondata);
 		})
@@ -98,7 +100,7 @@
 	};
 
 	var choseFlight = function(value){
-		var url = "http://212.142.46.137/doh/profiles/" + userdata._id + "/flight";
+		var url = apiBaseURL + "/profiles/" + userdata._id + "/flight";
 		var body = JSON.stringify({"flightNumber": value});
 		console.log("choseFlight", url, body);
 		$.ajax({
@@ -121,7 +123,7 @@
 
 	var getProfiles = function(callback){
 		console.log("getProfiles");
-		$.getJSON("http://212.142.46.137/doh/profiles", function(jsondata) {
+		$.getJSON(apiBaseURL + "/profiles", function(jsondata) {
 			console.log(jsondata);
 			callback && callback(jsondata);
 		})
