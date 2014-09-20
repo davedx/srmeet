@@ -1,6 +1,5 @@
-</<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,46 +13,10 @@
 	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
 	<script src="javascript/lib/moment.js"></script>
-     <script type="text/javascript" src="javascript/lib/hello.all.min.js"></script>
-    
-    <script type="text/javascript" src="javascript/lib/conf.js"></script>
-    <script type="text/javascript" src="javascript/lib/fbservice.js"></script>
-    <script type="text/javascript" src="javascript/lib/main.js"></script>
+    <script src="javascript/lib/main.js"></script>
+
 
 	<script type="text/javascript">
-
-	user = (function() {
-		var data;   
-		return {
-			get: function() {
-				return data;
-			},
-			set: function(d) {
-				data = d;
-			},
-            login: function(){
-                console.log("user.login clicked..");
-                mainApp.login(function(response){
-                    mainApp.getUserData(function(response){
-                        console.log("got user data=", response);
-                    });
-                });
-            },
-
-			init: function(facebook_id) {
-				if(!user.get()){
-					$.getJSON("http://212.142.46.137/doh/profiles/"+facebook_id, function(jsondata) {
-						user.set(jsondata);
-						console.log(user.get());						
-						$.mobile.navigate("#profile");
-					})
-					.fail(function(){
-						$.mobile.navigate("#login");
-					});	
-				}
-			}
-		};
-	})();
 
     setTimeout(function(){
 
@@ -63,6 +26,7 @@
                         console.log("It was already logged in, got user data=", response);
                     });
             }else{
+                $.mobile.navigate("#login");
                 // mainApp.login(function(response){
                 //     mainApp.getUserData(function(response){
                 //         console.log("got user data=", response);
@@ -73,7 +37,115 @@
         });
         
     }, 500);
+
+
+    function fbLogin(){
+        mainApp.login(function(response){
+                    mainApp.getUserData(function(response){
+                        console.log("got user data=", response);
+                        $.mobile.navigate("#profile");
+                    });
+                });
+    }
     
+
+	var userdata;
+	var facebookId = "1j123y8hu2i34ui";
+
+	var getUserByFacebookId = function(facebook_id, callback) {
+		console.log("getUserByFacebookId");
+		$.getJSON("http://212.142.46.137/doh/profiles/facebook/"+facebook_id, function(jsondata) {
+			console.log(jsondata);
+			userdata = jsondata;
+			callback && callback(jsondata);
+		})
+		.fail(function(){
+			$.mobile.navigate("#login");
+		});
+	}
+
+	var getFlightCodes = function(callback){
+		console.log("getFlightCodes");
+		$.getJSON("http://212.142.46.137/doh/flights", function(jsondata) {
+			console.log(jsondata);
+			callback && callback(jsondata);
+		})
+		.fail(function(){
+			console.error("Could not retrieve flights!!!");
+		});
+	};
+
+	var choseFlight = function(value){
+		var url = "http://212.142.46.137/doh/profiles/" + userdata._id + "/flight";
+		var body = JSON.stringify({"flightNumber": value});
+		console.log("choseFlight", url, body);
+		$.ajax({
+			url:url,
+			type:"POST",
+			data:body,
+			contentType:"application/json; charset=utf-8",
+			dataType:"json",
+			success: function(json){
+				console.log(json);
+				if(json.result === "OK"){
+					$.mobile.navigate("#match");
+				}
+				if(json.result === "FLIGHT_NOT_FOUND"){
+					console.error("Such flight, much not found");
+				}
+			}
+		});
+	};
+
+	var getProfiles = function(callback){
+		console.log("getProfiles");
+		$.getJSON("http://212.142.46.137/doh/profiles", function(jsondata) {
+			console.log(jsondata);
+			callback && callback(jsondata);
+		})
+	};
+
+	var getMatches = function(){
+
+	};
+
+	$(document).on( "pagecreate", function( event ) {
+		console.log("pagecreate: "+event.target.id);
+		switch(event.target.id){
+			case "splash":
+				break;
+			case "login":
+				break;
+			case "profile":
+				getUserByFacebookId(facebookId, function(user){
+					$("#profile-image").attr("src",user.profile.picture_url);
+					$("#welcome-message").text("Welcome "+user.profile.name+"!");
+				});
+				break;
+			case "flight":				
+				getFlightCodes(function(jsondata){
+					$("#flightlist").empty();
+					jsondata.forEach(function(val){
+						$("#flightlist").append('<li><a onclick="choseFlight.call(this,\''+val+'\')" href="javascript:void(0)">'+val+'</a></li>');
+					});
+					$('#flightlist').listview('refresh');
+				});
+				break;
+			case "match":				
+				getUserByFacebookId(facebookId);
+				getProfiles(function(profiles){
+					$("#matchlist").empty();
+					profiles.forEach(function(val){
+						var desttext = val.airport ? ('<p>Going to '+val.airport.city+' '+val.airport.country+'</p>') : '';
+						var list = '<li><a href="#"><img src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'</a></li>';
+						$("#matchlist").append(list);
+					});
+					$("#matchlist").listview('refresh');
+				});
+				break;
+		}
+	});
+
 
 	</script>
 
@@ -84,6 +156,9 @@
 	}
 	#login {
 		background-color: #ef5ba1;
+		text-align: center;
+	}
+	#profile{
 		text-align: center;
 	}
 	.logo {
@@ -104,7 +179,6 @@
 </head>
 
 <body>
-        <button id ='loginButton' onclick="mainApp.toggleLogin()">Login</button>
 	<div data-role="page" id="splash">
 		<div role="main" class="ui-content">
 			<img class="logo" src="images/logo_pink.png">
@@ -119,7 +193,7 @@
 		<div role="main" class="ui-content">
 			<img class="logo" src="images/logo_pink.png">
 			</br>
-			<a onlick="user.login()">
+			<a onclick="fbLogin()">
 				<img src="images/facebook_login.png">
 			</a>
 		</div>
@@ -130,39 +204,46 @@
 
 	<div data-role="page" id="profile">
 		<div role="main" class="ui-content">
-			<img src="images/profileimage.png" class="profile-image" />
-			<h2>Hi Jane Doe!</h2>
-			<p>Share the following infomation with other Meet&Chat users</p>
-			<form>
-				<fieldset data-role="controlgroup">
-					<input type="checkbox" checked name="checkbox-v-2b" id="checkbox-v-2b">
-					<label for="checkbox-v-2b">Female</label>
-					<input type="checkbox" checked name="checkbox-v-2c" id="checkbox-v-2c">
-					<label for="checkbox-v-2c">28 years old</label>
-					<input type="checkbox" checked name="checkbox-v-2d" id="checkbox-v-2d">
-					<label for="checkbox-v-2d">From Australia</label>
-				</fieldset>
-			</form>
+			<img id="profile-image" src="" class="profile-image" />
+			<h2 id="welcome-message"></h2>
+			<p>Welcome to Meet & Chat</p>
+			<p>To get in contact with people you bla bla bla... dave write something here please.</p>
+			<a href="#flight" class="ui-btn">Set your destination</a>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			&copy; Schiphol 2014
 		</div>
-
 	</div>
 
-	<script type="text/javascript">
+	<div data-role="page" id="flight">
+		<div role="main" class="ui-content">
+			<div data-role="header">
+				<h1>Your destination</h1>
+			</div>
+			
+			<ul id="flightlist" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search your flight number..." data-inset="true">
+			</ul>
 
-        
-        // mainApp.init(function(){
-        //     console.log("user"); 
-        //     mainApp.login(function(){
-        //         user.init(mainApp.getUserId());            
-        //     })   
-            
-        //     //user.init("541d8fbd1cf0d9fc2140b5bb");    
-        // });
-		
-	</script>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			&copy; Schiphol 2014
+		</div>
+	</div>
+
+	<div data-role="page" id="match">
+		<div role="main" class="ui-content">
+			<div data-role="header">
+				<h1>Match here</h1>
+			</div>
+			<ul id="matchlist" data-role="listview" data-inset="true">
+			    
+			</ul>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			&copy; Schiphol 2014
+		</div>
+	</div>
+
 </body>
 
 
