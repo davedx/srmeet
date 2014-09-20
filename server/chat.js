@@ -7,7 +7,7 @@ var setRoutes = function(app) {
 		var userId = ObjectID(req.params.id);
 
 		var collection = app.db.collection('chats');
-		collection.find({recipient: userId}).toArray(function(err, results) {
+		collection.find({recipient: userId}).sort({"_id": 1}).toArray(function(err, results) {
 			res.send(results);
 		});
 	});
@@ -18,12 +18,13 @@ var setRoutes = function(app) {
 		var data = req.body;
 		var senderUserId = ObjectID(data.sender);
 		var message = data.message;
+		var timestamp = new Date().toISOString();
 
 		console.log("Adding chat: ", data);
 
 		var addChat = function() {
 			app.db.collection('chats', function(err, collection) {
-				collection.insert({recipient: userId, sender: senderUserId, message: message}, {safe:true}, function(err, result) {
+				collection.insert({recipient: userId, sender: senderUserId, message: message, timestamp: timestamp}, {safe:true}, function(err, result) {
 					if (err) {
 						res.send({'error':'Error creating new chat message'});
 					} else {
