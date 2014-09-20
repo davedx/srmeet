@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var profile = require("./profile");
 var match = require("./match");
 var chat = require("./chat");
+var flights = require("./flights");
 
 app.use(bodyParser.json());
 
@@ -15,6 +16,7 @@ app.get('/', function (req, res) {
 profile(app);
 match(app);
 chat(app);
+flights(app);
 
 MongoClient.connect('mongodb://127.0.0.1:27017/sameet', function(err, db) {
 	if(err) throw err;
