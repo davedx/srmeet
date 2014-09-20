@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Meet&Talk</title>
+	<title>Meet&amp;Talk</title>
 	<link rel="shortcut icon" href="favicon.ico">
 
 	<link rel="stylesheet" href="styles/themes/meetandchat.min.css" />
@@ -13,50 +13,76 @@
 	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
 	<script src="javascript/lib/moment.js"></script>
-    <script src="javascript/lib/main.js"></script>
+	<script src="javascript/lib/main.js"></script>
 
 
 	<script type="text/javascript">
 
-		var apiBaseURL = "http://212.142.46.137/doh";
-
-    setTimeout(function(){
-
-        mainApp.getStatus(function(response){
-            if(response.status === 'connected'){
-                mainApp.getUserData(function(response){
-                        console.log("It was already logged in, got user data=", response);
-                        $.mobile.navigate("#profile");
-                    });
-            }else{
-                $.mobile.navigate("#login");
-                // mainApp.login(function(response){
-                //     mainApp.getUserData(function(response){
-                //         console.log("got user data=", response);
-                //     });
-                // });
-            }
-
-        });
-        
-    }, 500);
-
-
-    function fbLogin(){
-        mainApp.login(function(response){
-                    mainApp.getUserData(function(response){
-                        console.log("got user data=", response);
-                        $.mobile.navigate("#profile");
-                    });
-                });
-    }
-    
-
+	var apiBaseURL = "http://212.142.46.137/doh";
 	var userdata;
-	var facebookId = "1j123y8hu2i34ui";
+	var facebookId;
+
+	var getFacebookStatus = function(callback){
+		setTimeout(function(){
+			mainApp.getStatus(function(response){
+				if(response.status === 'connected'){
+					mainApp.getUserData(function(response){
+						console.log("It was already logged in, got user data=", response);
+						facebookId = response.id;
+						callback && callback(response);
+						
+					});
+				}
+			});
+		}, 250);
+	};
+
+	var fbLogin = function(){
+		mainApp.login(function(response){
+			mainApp.getUserData(function(response){
+				console.log("got user data=", response);
+				facebookId = response.id;
+				createUser(response, function(){
+					$.mobile.navigate("#profile");	
+				});				
+			});
+		});
+	};
+
+	var createUser = function(data, callback){
+		var url = apiBaseURL + "/profiles";
+		var body = JSON.stringify({
+		    "profile": {
+		        "fb_user_id": data.id,
+		        "name": data.first_name + " " + data.last_name,
+		        "gender": data.gender,
+		        "age": "100",
+		        "country": "USA",
+		        "hometown": "Seattle",
+		        "picture_url": "http://graph.facebook.com/"+data.id+"/picture"
+		    }
+		});
+		console.log("createUser", url, body);
+		$.ajax({
+			url:url,
+			type:"POST",
+			data:body,
+			contentType:"application/json; charset=utf-8",
+			dataType:"json",
+			success: function(json){
+				console.log(json);
+				callback && callback(json);
+			}
+		});
+
+	};
 
 	var getUserByFacebookId = function(facebook_id, callback) {
 		console.log("getUserByFacebookId");
+
+		if(!facebook_id){
+			$.mobile.navigate("#login");
+		}
 		$.getJSON(apiBaseURL + "/profiles/facebook/"+facebook_id, function(jsondata) {
 			console.log(jsondata);
 			userdata = jsondata;
@@ -129,16 +155,17 @@
 		})
 	};
 
-	var getMatches = function(){
+	// $(document).on("pageshow", function( event ) {
+	//  console.log("pageshow " +event.target.id);
+	// });
 
-	};
-
-	$(document).on( "pagecreate", function( event ) {
-		console.log("pagecreate: "+event.target.id);
+	$(document).on( "pageshow", function( event ) {
+		console.log("pageshow: "+event.target.id);
 		switch(event.target.id){
-			case "splash":
-				break;
 			case "login":
+				getFacebookStatus(function(){
+					$.mobile.navigate("#profile");
+				})
 				break;
 			case "profile":
 				getUserByFacebookId(facebookId, function(user){
@@ -146,7 +173,7 @@
 					$("#welcome-message").text("Welcome "+user.profile.name+"!");
 				});
 				break;
-			case "flight":				
+			case "flight":              
 				getFlightCodes(function(jsondata){
 					$("#flightlist").empty();
 					jsondata.forEach(function(val){
@@ -155,7 +182,7 @@
 					$('#flightlist').listview('refresh');
 				});
 				break;
-			case "match":				
+			case "match":               
 				getUserByFacebookId(facebookId);
 				getProfiles(function(profiles){
 					$("#matchlist").empty();
@@ -164,7 +191,7 @@
 						if(flightTime && flightTime.isAfter()) {
 							var formatted = flightTime.fromNow();
 							var desttext = val.airport ? ('<p>Going to '+val.airport.city+' '+formatted+'</p>') : '';
-							var list = '<li><a href="#"><img src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'</a></li>';
+							var list = '<li><a href="#"><img class="match-image" src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'</a></li>';
 							$("#matchlist").append(list);
 						}
 					});
@@ -202,28 +229,27 @@
 	.profile-image {
 		width: 100px;
 	}
+	.match-image{
+		width: 70px;
+		height: 70px;
+		margin: 5px;
+	}
 	</style>
 
 </head>
 
 <body>
-	<div data-role="page" id="splash">
-		<div role="main" class="ui-content">
-			<img class="logo" src="images/logo_pink.png">
-			</br>
-		</div>
-		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
-		</div>
-	</div>
-
 	<div data-role="page" id="login">
 		<div role="main" class="ui-content">
 			<img class="logo" src="images/logo_pink.png">
 			</br>
-			<a onclick="fbLogin()">
-				<img src="images/facebook_login.png">
-			</a>
+			</br>
+			</br>
+			<div id="login-button">
+				<a onclick="fbLogin()">
+					<img src="images/facebook_login.png">
+				</a>
+			</div>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			&copy; Schiphol 2014
@@ -248,9 +274,7 @@
 			<div data-role="header">
 				<h1>Your destination</h1>
 			</div>
-			
-			<ul id="flightlist" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search your flight number..." data-inset="true">
-			</ul>
+			<ul id="flightlist" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search your flight number..." data-inset="true"></ul>
 
 		</div>
 		<div data-role="footer" data-position="fixed">
@@ -263,9 +287,7 @@
 			<div data-role="header">
 				<h1>Match here</h1>
 			</div>
-			<ul id="matchlist" data-role="listview" data-inset="true">
-			    
-			</ul>
+			<ul id="matchlist" data-role="listview" data-inset="true"></ul>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			&copy; Schiphol 2014
