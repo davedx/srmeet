@@ -5,7 +5,8 @@ var mainApp = (function(){
 	      appId      : '637163226405149', // App ID
 	      status     : true, // check login status
 	      cookie     : true, // enable cookies to allow the server to access the session
-	      xfbml      : true  // parse XFBML
+	      xfbml      : true,  // parse XFBML
+	      oauth	: true
 	    });
      };
  
@@ -30,8 +31,8 @@ var mainApp = (function(){
 	             console.log('Authorization failed.');
 	            }
 	         },{
-	         		scope: 'email,user_birthday,user_location,public_profile', 
-	         		eturn_scopes: true	
+	         		scope: 'public_profile,email,user_birthday,user_location', 
+	         		return_scopes: true	
 	     		});	
 	         
 		},
@@ -43,7 +44,7 @@ var mainApp = (function(){
 		},
 		
 		getUserPicture: function(callback){
-			FB.api('/me/picture', function(response) {
+			FB.api('/me?fields=id,name,picture,birthday,about', function(response) {
  						callback(response);
 			        });	
 		},
