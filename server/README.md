@@ -156,4 +156,11 @@ Example response:
 }
 ```
 
+Example error (already liked this user):
+```
+{
+	"result": "ALREADY_LIKED"
+}
+```
+
 
