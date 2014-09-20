@@ -19,6 +19,7 @@
 	<script type="text/javascript">
 
 		var apiBaseURL = "http://212.142.46.137/doh";
+		//apiBaseURL = "http://10.10.0.103";
 
     setTimeout(function(){
 
@@ -129,6 +130,34 @@
 		})
 	};
 
+	var getChatsWith = function(id, callback) {
+		$.getJSON(apiBaseURL + "/chats/"+id, function(jsonData) {
+			callback(jsonData);
+		});
+	};
+
+	var sendChatMessage = function(recipient, sender, message, callback) {
+		var url = apiBaseURL + "/chats/" + recipient + "/new";
+		console.log(userdata);
+		var body = JSON.stringify({
+			message: message,
+			sender: sender,
+			senderName: userdata.profile.name,
+			senderFbId: userdata.profile.fb_user_id
+		});
+		console.log("send chat: ", body);
+		$.ajax({
+			url:url,
+			type:"POST",
+			data:body,
+			contentType:"application/json; charset=utf-8",
+			dataType:"json",
+			success: function(json){
+				console.log(json);
+			}
+		});
+	};
+
 	var getMatches = function(){
 
 	};
@@ -171,9 +200,42 @@
 					$("#matchlist").listview('refresh');
 				});
 				break;
+			case "chat":
+				if(!chatTimer) {
+					chatTimer = setInterval(function() {
+						var partner = getChatPartner();
+						getChatsWith(partner, function(chats) {
+							//console.log("Got chats, length: "+chats.length);
+							chats.forEach(function(chat) {
+								var currentItem = $("#cm_"+chat._id);
+								if(currentItem.length === 0) {
+									var item = '<li id="cm_'+chat._id+'">'+chat.senderName+": "+chat.message+"</li>";
+									$("#chatslist").append(item);
+								}
+							});
+						});
+					}, 1000);
+				}
+				break;
 		}
 	});
 
+	//TODO: get partner's mongoID from previous page(s)
+	var chatPartner = "541de614290d17c4523b4a49";
+	var chatTimer;
+	var getChatPartner = function() {
+		return chatPartner;
+	};
+	var setChatPartner = function() {
+		$("#chatslist").html("");
+	};
+
+	var chatSubmitClicked = function() {
+		var message = $("#chat_message").val();
+		sendChatMessage(chatPartner, userdata._id, message, function() {
+			console.log("Worked");
+		});
+	};
 
 	</script>
 
@@ -201,6 +263,10 @@
 	}
 	.profile-image {
 		width: 100px;
+	}
+	.controlgroup-textinput{
+    padding-top:.22em;
+    padding-bottom:.22em;
 	}
 	</style>
 
@@ -272,6 +338,25 @@
 		</div>
 	</div>
 
+	<div data-role="page" id="chat">
+		<div role="main" class="ui-content">
+			<div data-role="header">
+				<h1>Chatting with</h1>
+			</div>
+			<ul id="chatslist" data-role="listview" data-inset="true">
+			</ul>
+
+			<div data-role="fieldcontain">
+	      <fieldset data-role="controlgroup">
+	     		<input type="text" id="chat_message" />
+	     		<button onclick="chatSubmitClicked()" data-theme="b">Send</button>
+	      </fieldset>
+			</div>
+ 		</div>
+		<div data-role="footer" data-position="fixed">
+			&copy; Schiphol 2014
+		</div>
+	</div>
 </body>
 
 
