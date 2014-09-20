@@ -30,7 +30,6 @@ var getFlights = function(callback) {
 			response.Flights.Flight.forEach(function(flight) {
 				sane.push(flight.FlightNumber);
 			});
-			console.log(sane.length + " fuckin flights");
 		}
 		callback(err, sane);
 	});

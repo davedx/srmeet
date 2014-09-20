@@ -8,10 +8,11 @@ var chat = require("./chat");
 var flights = require("./flights");
 
 app.use(bodyParser.json());
+app.use(express.static("../client/"));
 
-app.get('/', function (req, res) {
-	res.send('Hello World');
-});
+// app.get('/', function (req, res) {
+// 	res.send('Hello World');
+// });
 
 profile(app);
 match(app);
