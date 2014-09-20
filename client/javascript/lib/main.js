@@ -24,19 +24,26 @@ var mainApp = (function(){
 			FB.login(function(response) {
 	           if (response.authResponse) 
 	           {
-	                callback();
+	                callback(true);
 	            } else
 	            {
 	             console.log('Authorization failed.');
 	            }
 	         },{
-	         		scope: 'email,user_birthday,user_location', 	
+	         		scope: 'email,user_birthday,user_location,public_profile', 
+	         		eturn_scopes: true	
 	     		});	
 	         
 		},
 
 		getUserData: function(callback){
 			FB.api('/me', function(response) {
+ 						callback(response);
+			        });	
+		},
+		
+		getUserPicture: function(callback){
+			FB.api('/me/picture', function(response) {
  						callback(response);
 			        });	
 		},
