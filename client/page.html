@@ -230,7 +230,7 @@
 				if(!chatTimer) {
 					chatTimer = setInterval(function() {
 						var partner = getChatPartner();
-						getChatsWith(partner, function(chats) {
+						getChatsWith(partner._id, function(chats) {
 							//console.log("Got chats, length: "+chats.length);
 							chats.forEach(function(chat) {
 								var currentItem = $("#cm_"+chat._id);
@@ -239,6 +239,7 @@
 									$("#chatslist").append(item);
 								}
 							});
+							partnerName
 						});
 					}, 1000);
 				}
@@ -247,12 +248,20 @@
 	});
 
 	//TODO: get partner's mongoID from previous page(s)
-	var chatPartner = "541de614290d17c4523b4a49";
+	var chatPartner = {
+		"_id": "541de614290d17c4523b4a49",
+		"name": "Jane",
+		"fb_id": ""
+	};
 	var chatTimer;
 	var getChatPartner = function() {
 		return chatPartner;
 	};
-	var setChatPartner = function() {
+	var setChatPartner = function(p) {
+		chatPartner = p;
+		$("#chat_top").html(p.name);
+		var fb_pic = "http://graph.facebook.com/"+p.fb_user_id+"/picture";
+		$("#chat_top").style("background-image", "url('"+fb_pic+"')");
 		$("#chatslist").html("");
 	};
 
@@ -266,6 +275,13 @@
 	</script>
 
 	<style>
+	#chat_top {
+		margin: 10px 10px;
+		text-align: left;
+		padding-left: 80px;
+		background-repeat: no-repeat;
+		background-image: url('http://graph.facebook.com/10152283152681356/picture');
+	}
 	#splash {
 		background-color: #ef5ba1;
 		text-align: center;
@@ -362,7 +378,7 @@
 	<div data-role="page" id="chat">
 		<div role="main" class="ui-content">
 			<div data-role="header">
-				<h1>Chatting with</h1>
+				<h1 id="chat_top">Dave</h1>
 			</div>
 			<ul id="chatslist" data-role="listview" data-inset="true">
 			</ul>
