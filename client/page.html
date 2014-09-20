@@ -13,8 +13,8 @@
 	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
 	<script src="javascript/lib/moment.js"></script>
+	<script src="javascript/lib/lodash.min.js"></script>
 	<script src="javascript/lib/main.js"></script>
-
 
 	<script type="text/javascript">
 
@@ -183,8 +183,50 @@
 		});
 	};
 
-	var getMatches = function(){
+	var makeMatch = function(dbid){
+		var url = apiBaseURL + "/matches/"+userdata._id+"/new";
+		var body = JSON.stringify({"id": dbid});
+		console.log("makeMatch", url, body);
+		$.ajax({
+			url:url,
+			type:"POST",
+			data:body,
+			contentType:"application/json; charset=utf-8",
+			dataType:"json",
+			success: function(json){
+				console.log(json);
+			}
+		});
+	};
 
+	var matchTimer;
+	var pollMatch = function(){
+		if(!matchTimer) {
+			matchTimer = setInterval(function() {
+				var myLikes = {};
+				var mutualMatches = [];
+				$.getJSON(apiBaseURL + "/matches/"+userdata._id, function(jsondata) {
+					console.log(jsondata);
+					jsondata.forEeach(function(m) {
+						if(m.user1 === userdata._id) {
+							myLikes[m.user2] = true;
+							$("#match_"+m.user2).css("background-color","red");
+						}
+					});
+					jsondata.forEach(function(m) {
+						if(m.user2 === userdata._id &&
+							myLikes[m.user1] === true) {
+							mutualMatches.push(m.user1);
+							$("#match_"+m.user1).css("background-color","green");
+						}
+					});
+				});
+
+				// update dom.
+				// 1. update existing profiles from myLikes to show who WE have liked
+				// 2. update chat list with mutual matches.
+			}, 1000);
+		}
 	};
 
 	$(document).on( "pageshow", function( event ) {
@@ -216,15 +258,16 @@
 					$("#matchlist").empty();
 					profiles.forEach(function(val){
 						var flightTime = getTimeFromFlight(val.flight);
-						if(flightTime && flightTime.isAfter()) {
+						if(flightTime && flightTime.isAfter() && val._id !== userdata._id) {
 							var formatted = flightTime.fromNow();
 							var desttext = val.airport ? ('<p>Going to '+val.airport.city+' '+formatted+'</p>') : '';
-							var list = '<li><a href="#"><img class="match-image" src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'</a></li>';
+							var list = '<li id="match_'+val._id+'"><a onclick="makeMatch.call(this,\''+val._id+'\')"><img class="match-image" src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'</a></li>';
 							$("#matchlist").append(list);
 						}
 					});
 					$("#matchlist").listview('refresh');
 				});
+				pollMatch();
 				break;
 			case "chat":
 				if(!chatTimer) {
