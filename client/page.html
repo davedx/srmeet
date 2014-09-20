@@ -24,6 +24,7 @@
             if(response.status === 'connected'){
                 mainApp.getUserData(function(response){
                         console.log("It was already logged in, got user data=", response);
+                        $.mobile.navigate("#profile");
                     });
             }else{
                 $.mobile.navigate("#login");
