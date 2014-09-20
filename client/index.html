@@ -1,10 +1,36 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Meet&Talk</title>
-	</head>
+
+<head>
+    <title>Meet&Talk</title>
+    <script type="text/javascript" src="javascript/lib/hello.min.js"></script>
+</head>
 
 <body>
-	content goes here...
+    <button onclick="hello('facebook').login()">Login with facebook</button>
+
 </body>
+<script type="text/javascript">
+	hello.init({
+	    facebook: 637163226405149
+	}, {
+	    redirect_uri: 'index.html'
+	});
+	// hello.on('auth.login', function(auth) {
+
+ //    // call user information, for the given network
+ //    hello(auth.network).api('/me').then(function(r) {
+	//         // Inject it into the container
+	//         var label = document.getElementById("profile_" + auth.network);
+	//         if (!label) {
+	//             label = document.createElement('div');
+	//             label.id = "profile_" + auth.network;
+	//             document.getElementById('profile').appendChild(label);
+	//         }
+	//         label.innerHTML = '<img src="' + r.thumbnail + '" /> Hey ' + r.name;
+	//     });
+	// });
+	
+</script>
+
 </html>
