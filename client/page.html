@@ -31,14 +31,11 @@
 		});
 	}
 
-	var getFlightCodes = function(){
+	var getFlightCodes = function(callback){
 		console.log("getFlightCodes");
 		$.getJSON("http://212.142.46.137/doh/flights", function(jsondata) {
-			$("#flightlist").empty();
-			jsondata.forEach(function(val){
-				$("#flightlist").append('<li><a onclick="choseFlight.call(this,\''+val+'\')" href="javascript:void(0)">'+val+'</a></li>');
-			});
-			$('#flightlist').listview('refresh');
+			console.log(jsondata);
+			callback && callback(jsondata);
 		})
 		.fail(function(){
 			console.error("Could not retrieve flights!!!");
@@ -93,7 +90,13 @@
 				});
 				break;
 			case "flight":				
-				getFlightCodes();
+				getFlightCodes(function(jsondata){
+					$("#flightlist").empty();
+					jsondata.forEach(function(val){
+						$("#flightlist").append('<li><a onclick="choseFlight.call(this,\''+val+'\')" href="javascript:void(0)">'+val+'</a></li>');
+					});
+					$('#flightlist').listview('refresh');
+				});
 				break;
 			case "match":				
 				getUserByFacebookId(facebookId);
