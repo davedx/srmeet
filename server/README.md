@@ -138,3 +138,29 @@ Example response:
 	},	
 ]
 ```
+
+4) User selects for each profile whether they would like to meet that person or not:
+
+Example request:
+```
+POST /matches/newMongoIDbigHexString/new
+{
+	"id": "otherUsersMongoIDString"
+}
+```
+
+Example response:
+```
+{
+	"result": "OK"
+}
+```
+
+Example error (already liked this user):
+```
+{
+	"result": "ALREADY_LIKED"
+}
+```
+
+
