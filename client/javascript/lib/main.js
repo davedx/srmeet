@@ -86,18 +86,7 @@ var mainApp = (function(){
 	           if (response.authResponse) 
 	           {
 	                //getUserInfo(); // Get User Information.
-	                FB.api('/me', function(response) {
- 						
- 						//console.log("profile data = ", response);
- 						callback(response);
-			        //response.name       - User Full name
-			        //response.link       - User Facebook URL
-			        //response.username   - User name
-			        //response.id         - id
-			        //response.email      - User email
-			 
-			        });	
-	 
+	                callback();
 	            } else
 	            {
 	             console.log('Authorization failed.');
@@ -109,8 +98,20 @@ var mainApp = (function(){
 			// 		console.error( "Signed in error:" + e.error.message );
 			// 	});
 		},
+		getUserData: function(callback){
+			FB.api('/me', function(response) {
+ 						callback(response);
+			        });	
+		},
 		logout: function(callback){
 			FB.logout(callback);
+		},
+
+		getStatus: function(callback) {
+			FB.getLoginStatus(function(response) {
+				// response.status === 'connected'
+			  	callback(response);
+			 });
 		},
 
 		toggleLogin: function(){

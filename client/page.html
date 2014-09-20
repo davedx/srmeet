@@ -33,8 +33,10 @@
 			},
             login: function(){
                 console.log("user.login clicked..");
-                mainApp.login(function(){
-                    console.log("login success.. redirecting to main page..");
+                mainApp.login(function(response){
+                    mainApp.getUserData(function(response){
+                        console.log("got user data=", response);
+                    });
                 });
             },
 
@@ -52,6 +54,27 @@
 			}
 		};
 	})();
+
+    setTimeout(function(){
+
+        mainApp.getStatus(function(response){
+            if(response.status === 'connected'){
+                mainApp.getUserData(function(response){
+                        console.log("It was already logged in, got user data=", response);
+                    });
+            }else{
+                // mainApp.login(function(response){
+                //     mainApp.getUserData(function(response){
+                //         console.log("got user data=", response);
+                //     });
+                // });
+            }
+
+        });
+        
+    }, 500);
+    
+
 	</script>
 
 	<style>
@@ -128,7 +151,8 @@
 	</div>
 
 	<script type="text/javascript">
-    
+
+        
         // mainApp.init(function(){
         //     console.log("user"); 
         //     mainApp.login(function(){
