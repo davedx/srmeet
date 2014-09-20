@@ -183,19 +183,28 @@
 	};
 
 	var makeMatch = function(dbid){
-		var url = apiBaseURL + "/matches/"+userdata._id+"/new";
-		var body = JSON.stringify({"id": dbid});
-		console.log("makeMatch", url, body);
-		$.ajax({
-			url:url,
-			type:"POST",
-			data:body,
-			contentType:"application/json; charset=utf-8",
-			dataType:"json",
-			success: function(json){
-				console.log(json);
-			}
-		});
+		if($("#match_"+dbid).hasClass("mutuallike")){
+			getProfiles(function(profiles){
+				var profile = _.find(profiles,{_id:dbid});
+				chatPartner = profile;
+				$.mobile.navigate("#chat");				
+			});
+		}
+		else{
+			var url = apiBaseURL + "/matches/"+userdata._id+"/new";
+			var body = JSON.stringify({"id": dbid});
+			console.log("makeMatch", url, body);
+			$.ajax({
+				url:url,
+				type:"POST",
+				data:body,
+				contentType:"application/json; charset=utf-8",
+				dataType:"json",
+				success: function(json){
+					console.log(json);
+				}
+			});
+		}
 	};
 
 	var matchTimer;
@@ -209,14 +218,14 @@
 					_.each(jsondata,function(m) {
 						if(m.user1 === userdata._id) {
 							myLikes[m.user2] = true;
-							$("#match_"+m.user2+" h2").css("color","red");
+							$("#match_"+m.user2).addClass("mylike");
 						}
 					});
 					_.each(jsondata,function(m) {
 						if(m.user2 === userdata._id &&
 							myLikes[m.user1] === true) {
 							mutualMatches.push(m.user1);
-							$("#match_"+m.user1+" h2").css("color","green");
+							$("#match_"+m.user1).addClass("mutuallike");
 						}
 					});
 				});
@@ -227,6 +236,18 @@
 			}, 1000);
 		}
 	};
+
+	$(document).on( "pagehide", function( event ) {
+		console.log("pagehide: "+event.target.id);
+		switch(event.target.id){
+			case "match":
+				clearInterval(matchTimer);
+				break;
+			case "chat":
+				clearInterval(chatTimer);
+				break;
+		}
+	});
 
 	$(document).on( "pageshow", function( event ) {
 		console.log("pageshow: "+event.target.id);
@@ -269,6 +290,12 @@
 				pollMatch();
 				break;
 			case "chat":
+
+				$("#chat_top").html(getChatPartner().profile.name);
+				var fb_pic = "http://graph.facebook.com/"+getChatPartner().profile.fb_user_id+"/picture";
+				$("#chat_top").style("background-image", "url('"+fb_pic+"')");
+				$("#chatslist").html("");
+
 				if(!chatTimer) {
 					chatTimer = setInterval(function() {
 						var partner = getChatPartner();
@@ -299,17 +326,10 @@
 	var getChatPartner = function() {
 		return chatPartner;
 	};
-	var setChatPartner = function(p) {
-		chatPartner = p;
-		$("#chat_top").html(p.name);
-		var fb_pic = "http://graph.facebook.com/"+p.fb_user_id+"/picture";
-		$("#chat_top").style("background-image", "url('"+fb_pic+"')");
-		$("#chatslist").html("");
-	};
 
 	var chatSubmitClicked = function() {
 		var message = $("#chat_message").val();
-		sendChatMessage(chatPartner, userdata._id, message, function() {
+		sendChatMessage(chatPartner._id, userdata._id, message, function() {
 			console.log("Worked");
 		});
 	};
@@ -351,11 +371,17 @@
 	.controlgroup-textinput{
     padding-top:.22em;
     padding-bottom:.22em;
-  }
+  	}
 	.match-image{
 		width: 70px;
 		height: 70px;
 		margin: 5px;
+	}
+	.mutuallike h2{
+		color: red;
+	}
+	.mylike h2{
+		color: green;
 	}
 	</style>
 
