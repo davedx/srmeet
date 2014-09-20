@@ -1,0 +1,67 @@
+</<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meet&Talk</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <link rel="stylesheet" href="styles/themes/meetandchat.min.css" />
+  	<link rel="stylesheet" href="styles/themes/jquery.mobile.icons.min.css" />
+  	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile.structure-1.4.3.min.css" /> 
+
+	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
+
+    <script src="javascript/lib/moment.js"></script>
+
+    <style>
+    	#foo {
+			background-color:#ef5ba1;
+			text-align: center;
+    	}
+    	.logo {
+    		width: 100%;
+    	}
+    	[data-role=footer] {
+    		opacity: 0.5;
+    		height: 15px;
+    		font-size: 0.75em;
+    		line-height: 15px;
+    		text-align: right;
+    	} 
+    </style>
+
+</head>
+
+<body>
+    <div data-role="page" id="foo">
+        <div role="main" class="ui-content">
+            <img class="logo" src="images/logo_pink.png">
+            </br>
+            <a href="alert();"><img src="images/facebook_login.png"></a>
+        </div>
+        <div data-role="footer" data-position="fixed">
+            &copy; Schiphol 2014
+        </div>
+    </div>
+
+    <div data-role="page" id="bar">
+        <div data-role="header">
+            <h1>Bar</h1>
+        </div>
+        <div role="main" class="ui-content">
+            <p>I'm the second in the source order so I'm hidden when the page loads. I'm just shown if a link that references my id is beeing clicked.</p>
+            <p><a href="#foo">Back to foo</a>
+            </p>
+        </div>
+        <div data-role="footer">
+            <h4>Page Footer</h4>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
