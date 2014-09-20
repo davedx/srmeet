@@ -25,6 +25,16 @@ var setRoutes = function(app) {
 		});
 	});
 
+	// get a user profile by their Facebook user ID.
+	app.get('/profiles/facebook/:id', function (req, res) {
+		console.log("Responding to /profiles/facebook/" + req.params.id);
+
+		var collection = app.db.collection('profiles');
+		collection.findOne({"profile.fb_user_id": req.params.id}, function(err, results) {
+			res.send(results);
+		});
+	});
+
 	// Create a new profile.
 	app.post('/profiles/new', function (req, res) {
 		
