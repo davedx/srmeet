@@ -13,11 +13,68 @@
 	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
 	<script src="javascript/lib/moment.js"></script>
+	<script src="javascript/lib/main.js"></script>
+
 
 	<script type="text/javascript">
 
 	var userdata;
 	var facebookId;
+
+	var getFacebookStatus = function(callback){
+		setTimeout(function(){
+			mainApp.getStatus(function(response){
+				if(response.status === 'connected'){
+					mainApp.getUserData(function(response){
+						console.log("It was already logged in, got user data=", response);
+						facebookId = response.id;
+						callback && callback(response);
+						
+					});
+				}
+			});
+		}, 250);
+	};
+
+	var fbLogin = function(){
+		mainApp.login(function(response){
+			mainApp.getUserData(function(response){
+				console.log("got user data=", response);
+				facebookId = response.id;
+				createUser(response, function(){
+					$.mobile.navigate("#profile");	
+				});				
+			});
+		});
+	};
+
+	var createUser = function(data, callback){
+		var url = "http://212.142.46.137/doh/profiles";
+		var body = JSON.stringify({
+		    "profile": {
+		        "fb_user_id": data.id,
+		        "name": data.first_name + " " + data.last_name,
+		        "gender": data.gender,
+		        "age": "100",
+		        "country": "USA",
+		        "hometown": "Seattle",
+		        "picture_url": "http://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png"
+		    }
+		});
+		console.log("createUser", url, body);
+		$.ajax({
+			url:url,
+			type:"POST",
+			data:body,
+			contentType:"application/json; charset=utf-8",
+			dataType:"json",
+			success: function(json){
+				console.log(json);
+				callback && callback(json);
+			}
+		});
+
+	};
 
 	var getUserByFacebookId = function(facebook_id, callback) {
 		console.log("getUserByFacebookId");
@@ -75,18 +132,17 @@
 		})
 	};
 
-	var getMatches = function(){
-
-	};
-
-	// $(document).on("pagebeforechange", function( event ) {
-	// 	console.log("pagebeforechange", event);
+	// $(document).on("pageshow", function( event ) {
+	//  console.log("pageshow " +event.target.id);
 	// });
 
-	$(document).on( "pagecreate", function( event ) {
-		console.log("pagecreate: "+event.target.id);
+	$(document).on( "pageshow", function( event ) {
+		console.log("pageshow: "+event.target.id);
 		switch(event.target.id){
 			case "login":
+				getFacebookStatus(function(){
+					$.mobile.navigate("#profile");
+				})
 				break;
 			case "profile":
 				getUserByFacebookId(facebookId, function(user){
@@ -94,7 +150,7 @@
 					$("#welcome-message").text("Welcome "+user.profile.name+"!");
 				});
 				break;
-			case "flight":				
+			case "flight":              
 				getFlightCodes(function(jsondata){
 					$("#flightlist").empty();
 					jsondata.forEach(function(val){
@@ -103,13 +159,13 @@
 					$('#flightlist').listview('refresh');
 				});
 				break;
-			case "match":				
+			case "match":               
 				getUserByFacebookId(facebookId);
 				getProfiles(function(profiles){
 					$("#matchlist").empty();
 					profiles.forEach(function(val){
 						var desttext = val.airport ? ('<p>Going to '+val.airport.city+' '+val.airport.country+'</p>') : '';
-						var list = '<li><a href="#"><img src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'</a></li>';
+						var list = '<li><a href="#"><img class="match-image" src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'</a></li>';
 						$("#matchlist").append(list);
 					});
 					$("#matchlist").listview('refresh');
@@ -117,6 +173,7 @@
 				break;
 		}
 	});
+
 
 	</script>
 
@@ -145,6 +202,11 @@
 	.profile-image {
 		width: 100px;
 	}
+	.match-image{
+		width: 70px;
+		height: 70px;
+		margin: 5px;
+	}
 	</style>
 
 </head>
@@ -156,9 +218,11 @@
 			</br>
 			</br>
 			</br>
-			<a href="#profile">
-				<img src="images/facebook_login.png">
-			</a>
+			<div id="login-button">
+				<a onclick="fbLogin()">
+					<img src="images/facebook_login.png">
+				</a>
+			</div>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			&copy; Schiphol 2014
@@ -202,6 +266,7 @@
 			&copy; Schiphol 2014
 		</div>
 	</div>
+
 </body>
 
 
