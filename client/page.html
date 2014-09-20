@@ -76,11 +76,13 @@
 
 	};
 
+	// $(document).on("pagebeforechange", function( event ) {
+	// 	console.log("pagebeforechange", event);
+	// });
+
 	$(document).on( "pagecreate", function( event ) {
 		console.log("pagecreate: "+event.target.id);
 		switch(event.target.id){
-			case "splash":
-				break;
 			case "login":
 				break;
 			case "profile":
@@ -145,16 +147,6 @@
 </head>
 
 <body>
-	<div data-role="page" id="splash">
-		<div role="main" class="ui-content">
-			<img class="logo" src="images/logo_pink.png">
-			</br>
-		</div>
-		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
-		</div>
-	</div>
-
 	<div data-role="page" id="login">
 		<div role="main" class="ui-content">
 			<img class="logo" src="images/logo_pink.png">
