@@ -16,7 +16,16 @@ var setRoutes = function(app) {
 	});
 
 	// get a user profile
-	app.get('/profiles/:id', function (req, res) {
+	app.delete('/profiles/:id', function (req, res) {
+		console.log("Responding to delete on /profiles/:id");
+
+		var collection = app.db.collection('profiles');
+		collection.remove({_id: ObjectID(req.params.id)},{justOne: true},function(err, results) {
+			res.send(results);
+		});
+	});
+
+	app.get('/profiles/:id', function(req,res){
 		console.log("Responding to /profiles/:id");
 
 		var collection = app.db.collection('profiles');
