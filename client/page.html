@@ -21,14 +21,15 @@
     <script type="text/javascript" src="javascript/lib/main.js"></script>
 
 	<script type="text/javascript">
+
 	user = (function() {
 		var data;   
 		return {
 			get: function() {
-				return this.data;
+				return data;
 			},
-			set: function(data) {
-				this.data = data;
+			set: function(d) {
+				data = d;
 			},
             login: function(){
                 console.log("user.login clicked..");
@@ -39,9 +40,9 @@
 
 			init: function(facebook_id) {
 				if(!user.get()){
-					$.getJSON("http://212.142.46.137/doh/profiles/"+facebook_id, function(data) {
-						user.set(data[0]);
-						console.log(user.get());
+					$.getJSON("http://212.142.46.137/doh/profiles/"+facebook_id, function(jsondata) {
+						user.set(jsondata);
+						console.log(user.get());						
 						$.mobile.navigate("#profile");
 					})
 					.fail(function(){
