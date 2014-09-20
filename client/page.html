@@ -13,8 +13,42 @@
 	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
 	<script src="javascript/lib/moment.js"></script>
+    <script src="javascript/lib/main.js"></script>
+
 
 	<script type="text/javascript">
+
+    setTimeout(function(){
+
+        mainApp.getStatus(function(response){
+            if(response.status === 'connected'){
+                mainApp.getUserData(function(response){
+                        console.log("It was already logged in, got user data=", response);
+                        $.mobile.navigate("#profile");
+                    });
+            }else{
+                $.mobile.navigate("#login");
+                // mainApp.login(function(response){
+                //     mainApp.getUserData(function(response){
+                //         console.log("got user data=", response);
+                //     });
+                // });
+            }
+
+        });
+        
+    }, 500);
+
+
+    function fbLogin(){
+        mainApp.login(function(response){
+                    mainApp.getUserData(function(response){
+                        console.log("got user data=", response);
+                        $.mobile.navigate("#profile");
+                    });
+                });
+    }
+    
 
 	var userdata;
 	var facebookId = "1j123y8hu2i34ui";
@@ -138,6 +172,7 @@
 		}
 	});
 
+
 	</script>
 
 	<style>
@@ -184,7 +219,7 @@
 		<div role="main" class="ui-content">
 			<img class="logo" src="images/logo_pink.png">
 			</br>
-			<a href="alert();">
+			<a onclick="fbLogin()">
 				<img src="images/facebook_login.png">
 			</a>
 		</div>
@@ -234,6 +269,7 @@
 			&copy; Schiphol 2014
 		</div>
 	</div>
+
 </body>
 
 
