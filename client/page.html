@@ -17,10 +17,13 @@
 	<script type="text/javascript">
 
 	var userdata;
-	var facebookId = "1j123y8hu2i34ui";
+	var facebookId;
 
 	var getUserByFacebookId = function(facebook_id, callback) {
 		console.log("getUserByFacebookId");
+		if(!facebook_id){
+			$.mobile.navigate("#login");
+		}
 		$.getJSON("http://212.142.46.137/doh/profiles/facebook/"+facebook_id, function(jsondata) {
 			console.log(jsondata);
 			userdata = jsondata;
@@ -180,9 +183,7 @@
 			<div data-role="header">
 				<h1>Your destination</h1>
 			</div>
-			
-			<ul id="flightlist" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search your flight number..." data-inset="true">
-			</ul>
+			<ul id="flightlist" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search your flight number..." data-inset="true"></ul>
 
 		</div>
 		<div data-role="footer" data-position="fixed">
@@ -195,9 +196,7 @@
 			<div data-role="header">
 				<h1>Match here</h1>
 			</div>
-			<ul id="matchlist" data-role="listview" data-inset="true">
-			    
-			</ul>
+			<ul id="matchlist" data-role="listview" data-inset="true"></ul>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			&copy; Schiphol 2014
