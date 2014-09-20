@@ -56,9 +56,8 @@
 		        "fb_user_id": data.id,
 		        "name": data.first_name + " " + data.last_name,
 		        "gender": data.gender,
-		        "age": "100",
+		        "age": Math.ceil((Math.random()*20) + 20),
 		        "country": "USA",
-		        "hometown": "Seattle",
 		        "picture_url": "http://graph.facebook.com/"+data.id+"/picture"
 		    }
 		});
@@ -207,17 +206,17 @@
 				var mutualMatches = [];
 				$.getJSON(apiBaseURL + "/matches/"+userdata._id, function(jsondata) {
 					console.log(jsondata);
-					jsondata.forEeach(function(m) {
+					_.each(jsondata,function(m) {
 						if(m.user1 === userdata._id) {
 							myLikes[m.user2] = true;
-							$("#match_"+m.user2).css("background-color","red");
+							$("#match_"+m.user2+" h2").css("color","red");
 						}
 					});
-					jsondata.forEach(function(m) {
+					_.each(jsondata,function(m) {
 						if(m.user2 === userdata._id &&
 							myLikes[m.user1] === true) {
 							mutualMatches.push(m.user1);
-							$("#match_"+m.user1).css("background-color","green");
+							$("#match_"+m.user1+" h2").css("color","green");
 						}
 					});
 				});
