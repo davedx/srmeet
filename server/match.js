@@ -1,4 +1,3 @@
-var schiphol = require('./schiphol');
 var ObjectID = require('mongodb').ObjectID;
 
 var setRoutes = function(app) {
