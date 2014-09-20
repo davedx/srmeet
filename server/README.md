@@ -138,3 +138,51 @@ Example response:
 	},	
 ]
 ```
+
+4) User selects for each profile whether they would like to meet that person or not:
+
+Example request:
+```
+POST /matches/newMongoIDbigHexString/new
+{
+	"id": "otherUsersMongoIDString"
+}
+```
+
+Example response:
+```
+{
+	"result": "OK"
+}
+```
+
+Example error (already liked this user):
+```
+{
+	"result": "ALREADY_LIKED"
+}
+```
+
+5) User (user's phone) checks if they have any matches yet:
+
+Example request:
+```
+GET /matches/newMongoIDbigHexString
+```
+
+Example response:
+```
+[
+	{
+		"user1": "541d5f62b51af7310ccc4c51",
+		"user2": "541d7a53a1e457410dec07d9",
+		"_id": "541d7ae2a1e457410dec07da"
+	},
+	{
+		"user1": "541d5f62b51af7310ccc4c51",
+		"user2": "541d98a3a51858b517f620f2",
+		"_id": "541dd0a53e0e04be18aa8cd9"
+	}
+]
+```
+

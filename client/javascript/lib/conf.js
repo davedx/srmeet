@@ -1,6 +1,7 @@
 var appConf = {
 	
-	facebookAppId : 637163226405149
+	facebookAppId : 637163226405149, 
+	userData : false
 };
 
 

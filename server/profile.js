@@ -25,31 +25,44 @@ var setRoutes = function(app) {
 		});
 	});
 
+	var getUserFromFacebookUserId = function(userId, callback) {
+		var collection = app.db.collection('profiles');
+		collection.findOne({"profile.fb_user_id": userId}, callback);
+	};
+
 	// get a user profile by their Facebook user ID.
 	app.get('/profiles/facebook/:id', function (req, res) {
 		console.log("Responding to /profiles/facebook/" + req.params.id);
-
-		var collection = app.db.collection('profiles');
-		collection.findOne({"profile.fb_user_id": req.params.id}, function(err, results) {
+		getUserFromFacebookUserId(req.params.id, function(err, results) {
 			res.send(results);
 		});
 	});
 
-	// Create a new profile.
-	app.post('/profiles/new', function (req, res) {
+	// Create a new profile, OR if fb_user_id is populated, update an existing one.
+	app.post('/profiles', function (req, res) {
 		
-		var profile = req.body;
-		console.log('Adding profile: ', profile);
+		var data = req.body;
+		console.log('Adding profile: ', data);
 
-		app.db.collection('profiles', function(err, collection) {
-			collection.insert(profile, {safe:true}, function(err, result) {
-				if (err) {
-					res.send({'error':'Error creating new profile'});
-				} else {
-					console.log('Success: ' + JSON.stringify(result[0]));
-					res.send(result[0]);
-				}
+		var createNewUser = function() {
+			app.db.collection('profiles', function(err, collection) {
+				collection.insert(data, {safe:true}, function(err, result) {
+					if (err) {
+						res.send({'error':'Error creating new profile'});
+					} else {
+						console.log('Success: ' + JSON.stringify(result[0]));
+						res.send(result[0]);
+					}
+				});
 			});
+		};
+
+		getUserFromFacebookUserId(data.profile.fb_user_id, function(err, results) {
+			if(!results) {
+				createNewUser();
+			} else {
+				res.send({result: "USER_ALREADY_EXISTS"});
+			}
 		});
 	});
 
