@@ -3,17 +3,33 @@
 
 <head>
     <title>Meet&Talk</title>
-    <script type="text/javascript" src="javascript/lib/hello.min.js"></script>
+    <script type="text/javascript" src="javascript/lib/hello.all.min.js"></script>
     
     <script type="text/javascript" src="javascript/lib/conf.js"></script>
     <script type="text/javascript" src="javascript/lib/fbservice.js"></script>
     <script type="text/javascript" src="javascript/lib/main.js"></script>
 </head>
 <body>  
-	<button id ='loginButton' onclick="mainApp.toggleLogin()">Login</button>
+	<button id ='loginButton' onclick="loginToFacebook()">Login</button>
+	<button id ='logoutButton' onclick="logoutFromFacebook()">Logout</button>
     <div id='profile'></div>
     <script type="text/javascript">
-    	mainApp.init();
+
+    	function loginToFacebook(){
+    		mainApp.login(function(data){
+    			console.log("login success=", data);
+    		});
+    	}
+
+    	function logoutFromFacebook(){
+    		mainApp.logout(function(){
+    			console.log("out success=");
+    		});
+    		
+    	}	
+    	 // mainApp.init(function(){
+    	 // 	console.log("index.html, mainApp initilization complete...")
+    	 // });
     </script>
 </body>
 </html>

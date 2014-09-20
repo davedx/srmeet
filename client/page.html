@@ -14,10 +14,15 @@
 	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
 	<script src="javascript/lib/moment.js"></script>
+     <script type="text/javascript" src="javascript/lib/hello.all.min.js"></script>
+    
+    <script type="text/javascript" src="javascript/lib/conf.js"></script>
+    <script type="text/javascript" src="javascript/lib/fbservice.js"></script>
+    <script type="text/javascript" src="javascript/lib/main.js"></script>
 
 	<script type="text/javascript">
 	user = (function() {
-		var data;
+		var data;   
 		return {
 			get: function() {
 				return this.data;
@@ -25,6 +30,13 @@
 			set: function(data) {
 				this.data = data;
 			},
+            login: function(){
+                console.log("user.login clicked..");
+                mainApp.login(function(){
+                    console.log("login success.. redirecting to main page..");
+                });
+            },
+
 			init: function(facebook_id) {
 				if(!user.get()){
 					$.getJSON("http://212.142.46.137/doh/profiles/"+facebook_id, function(data) {
@@ -68,6 +80,7 @@
 </head>
 
 <body>
+        <button id ='loginButton' onclick="mainApp.toggleLogin()">Login</button>
 	<div data-role="page" id="splash">
 		<div role="main" class="ui-content">
 			<img class="logo" src="images/logo_pink.png">
@@ -82,7 +95,7 @@
 		<div role="main" class="ui-content">
 			<img class="logo" src="images/logo_pink.png">
 			</br>
-			<a href="alert();">
+			<a onlick="user.login()">
 				<img src="images/facebook_login.png">
 			</a>
 		</div>
@@ -114,7 +127,16 @@
 	</div>
 
 	<script type="text/javascript">
-		user.init("541d8fbd1cf0d9fc2140b5bb");
+    
+        // mainApp.init(function(){
+        //     console.log("user"); 
+        //     mainApp.login(function(){
+        //         user.init(mainApp.getUserId());            
+        //     })   
+            
+        //     //user.init("541d8fbd1cf0d9fc2140b5bb");    
+        // });
+		
 	</script>
 </body>
 
