@@ -3,7 +3,7 @@ var ObjectID = require('mongodb').ObjectID;
 var setRoutes = function(app) {
 	// Get chats for a user.
 	app.get('/chats/:id', function (req, res) {
-		console.log("Responding to /chats");
+		//console.log("Responding to /chats");
 		var userId = ObjectID(req.params.id);
 
 		var collection = app.db.collection('chats');
