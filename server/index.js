@@ -18,5 +18,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/sameet', function(err, db) {
 	if(err) throw err;
 	app.db = db;
 
-	app.listen(3000, '10.10.0.103');
+	var ip = process.argv[2];
+	console.log("Binding to "+ip+":3000");
+	app.listen(3000, ip);
 });
