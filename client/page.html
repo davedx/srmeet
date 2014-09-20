@@ -2,66 +2,121 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Meet&Talk</title>
-    <link rel="shortcut icon" href="favicon.ico">
-    
-    <link rel="stylesheet" href="styles/themes/meetandchat.min.css" />
-  	<link rel="stylesheet" href="styles/themes/jquery.mobile.icons.min.css" />
-  	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile.structure-1.4.3.min.css" /> 
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Meet&Talk</title>
+	<link rel="shortcut icon" href="favicon.ico">
 
-	<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<link rel="stylesheet" href="styles/themes/meetandchat.min.css" />
+	<link rel="stylesheet" href="styles/themes/jquery.mobile.icons.min.css" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile.structure-1.4.3.min.css" />
+
+	<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
+	<script src="javascript/lib/moment.js"></script>
 
-    <script src="javascript/lib/moment.js"></script>
+	<script type="text/javascript">
+	user = (function() {
+		var data;
+		return {
+			get: function() {
+				return this.data;
+			},
+			set: function(data) {
+				this.data = data;
+			},
+			init: function(facebook_id) {
+				if(!user.get()){
+					$.getJSON("http://212.142.46.137/doh/profiles/"+facebook_id, function(data) {
+						user.set(data[0]);
+						console.log(user.get());
+						$.mobile.navigate("#profile");
+					})
+					.fail(function(){
+						$.mobile.navigate("#login");
+					});	
+				}
+			}
+		};
+	})();
+	</script>
 
-    <style>
-    	#foo {
-			background-color:#ef5ba1;
-			text-align: center;
-    	}
-    	.logo {
-    		width: 100%;
-    	}
-    	[data-role=footer] {
-    		opacity: 0.5;
-    		height: 15px;
-    		font-size: 0.75em;
-    		line-height: 15px;
-    		text-align: right;
-    	} 
-    </style>
+	<style>
+	#splash {
+		background-color: #ef5ba1;
+		text-align: center;
+	}
+	#login {
+		background-color: #ef5ba1;
+		text-align: center;
+	}
+	.logo {
+		width: 100%;
+	}
+	[data-role=footer] {
+		opacity: 0.5;
+		height: 15px;
+		font-size: 0.75em;
+		line-height: 15px;
+		text-align: right;
+	}
+	.profile-image {
+		width: 100px;
+	}
+	</style>
 
 </head>
 
 <body>
-    <div data-role="page" id="foo">
-        <div role="main" class="ui-content">
-            <img class="logo" src="images/logo_pink.png">
-            </br>
-            <a href="alert();"><img src="images/facebook_login.png"></a>
-        </div>
-        <div data-role="footer" data-position="fixed">
-            &copy; Schiphol 2014
-        </div>
-    </div>
+	<div data-role="page" id="splash">
+		<div role="main" class="ui-content">
+			<img class="logo" src="images/logo_pink.png">
+			</br>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			&copy; Schiphol 2014
+		</div>
+	</div>
 
-    <div data-role="page" id="bar">
-        <div data-role="header">
-            <h1>Bar</h1>
-        </div>
-        <div role="main" class="ui-content">
-            <p>I'm the second in the source order so I'm hidden when the page loads. I'm just shown if a link that references my id is beeing clicked.</p>
-            <p><a href="#foo">Back to foo</a>
-            </p>
-        </div>
-        <div data-role="footer">
-            <h4>Page Footer</h4>
-        </div>
-    </div>
+	<div data-role="page" id="login">
+		<div role="main" class="ui-content">
+			<img class="logo" src="images/logo_pink.png">
+			</br>
+			<a href="alert();">
+				<img src="images/facebook_login.png">
+			</a>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			&copy; Schiphol 2014
+		</div>
+	</div>
 
+	<div data-role="page" id="profile">
+		<div role="main" class="ui-content">
+			<img src="images/profileimage.png" class="profile-image" />
+			<h2>Hi Jane Doe!</h2>
+			<p>Share the following infomation with other Meet&Chat users</p>
+			<form>
+				<fieldset data-role="controlgroup">
+					<input type="checkbox" checked name="checkbox-v-2b" id="checkbox-v-2b">
+					<label for="checkbox-v-2b">Female</label>
+					<input type="checkbox" checked name="checkbox-v-2c" id="checkbox-v-2c">
+					<label for="checkbox-v-2c">28 years old</label>
+					<input type="checkbox" checked name="checkbox-v-2d" id="checkbox-v-2d">
+					<label for="checkbox-v-2d">From Australia</label>
+				</fieldset>
+			</form>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			&copy; Schiphol 2014
+		</div>
 
+	</div>
+
+	<script type="text/javascript">
+		user.init("541d8fbd1cf0d9fc2140b5bb");
+	</script>
 </body>
+
 
 </html>
