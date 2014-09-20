@@ -1,6 +1,7 @@
 User profile schema example:
 ==
 
+```
 {
 	"_id": "541d5f62b51af7310ccc4c51",
 	"airport": {
@@ -24,3 +25,4 @@ User profile schema example:
 		"picture_url": "http://fb.cdn.net/asjdioasjdoj.jpg"
 	}
 }
+```
