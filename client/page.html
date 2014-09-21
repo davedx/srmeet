@@ -182,6 +182,14 @@
 		});
 	};
 
+	var getMerchants = function(callback){
+		console.log("getMerchants");
+		$.getJSON(apiBaseURL + "/merchants", function(jsondata) {
+			console.log(jsondata);
+			callback && callback(jsondata);
+		})
+	}
+
 	var makeMatch = function(dbid){
 		if($("#match_"+dbid+" .match-state").hasClass("mutual")){
 			getProfiles(function(profiles){
@@ -227,7 +235,7 @@
 						if(m.user2 === userdata._id &&
 							myLikes[m.user1] === true) {
 							mutualMatches.push(m.user1);							
-							$("#match_"+m.user1+" .match-state").text("GO MEET & CHAT");
+							$("#match_"+m.user1+" .match-state").text("CONNECT");
 							$("#match_"+m.user1+" .match-state").addClass("mutual");
 						}
 					});
@@ -295,8 +303,9 @@
 			case "chat":
 
 				$("#chat_top").html(getChatPartner().profile.name);
-				$("#chat_top").css("background-image", "url(http://graph.facebook.com/"+getChatPartner().profile.fb_user_id+"/picture?width=80&height=80)");
+				$("#chat-image").attr("src","http://graph.facebook.com/"+getChatPartner().profile.fb_user_id+"/picture?width=80&height=80");
 				$("#chatslist").html("");
+				$("#venue_text").html("Select a venue to connect with "+getChatPartner().profile.name);
 
 				if(!chatTimer) {
 					chatTimer = setInterval(function() {
@@ -313,6 +322,16 @@
 						});
 					}, 1000);
 				}
+
+				getMerchants(function(merchants){
+					$("#venue_list").empty();
+					var list = _.first(merchants.results,5);
+					_.each(list, function(val){
+						$("#venue_list").append('<li><a href="#">'+val.name+'</a></li>');
+					});
+					$("#venue_list").listview("refresh");
+				})
+				
 				break;
 		}
 	});
@@ -351,8 +370,7 @@
 	#chat_top {
 		margin: 10px 10px;
 		text-align: left;
-		padding-left: 80px;
-		background-repeat: no-repeat;
+		padding-left: 160px;
 	}
 	#login {
 		background-color: #00498d;
@@ -428,6 +446,13 @@
 	.ui-title{
 		margin: 0 !important;
 	}
+	#chat-image{
+		width: 40px;
+		height: 40px;
+		position: absolute;
+		top:18px;
+		left:120px;
+	}
 	</style>
 
 </head>
@@ -496,12 +521,19 @@
 			<div data-role="header">
 				<a href="#" data-icon="back" data-rel="back">Back</a>
 				<h1 id="chat_top">Dave</h1>
-				<!--<img src="http://graph.facebook.com/784378181609010/picture" id="myImage" /> -->
 			</div>
-			<ul id="chatslist" style="background-color:white;color: black;padding-left: 5px" data-role="listview" data-inset="true">
+			<img id="chat-image"/>
+			<ul id="chatslist" style="background-color:white;color: black;padding:15px" data-role="listview" data-inset="true">
 			</ul>
      		<input type="text" id="chat_message" />
      		<button id="chat_button" onclick="chatSubmitClicked()" data-theme="b">Send</button>
+     		<br>
+     		<br>
+     		<div data-role="collapsible" data-collapsed="false">
+			    <h4 id="venue_text">Select a venue</h4>
+			    <ul id="venue_list" data-role="listview">
+			    </ul>
+			</div>
  		</div>
 		<div data-role="footer" data-position="fixed">
 			&copy; Schiphol 2014
