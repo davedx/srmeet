@@ -18,13 +18,17 @@
 
 	<script type="text/javascript">
 
+GET http://graph.facebook.com/1j123y8hu2i34ui/picture?width=80&height=80 404 (Not Found) jquery-2.1.1.min.js:3
+GET http://graph.facebook.com/xhajsdasjiajdas/picture?width=80&height=80 404 (Not Found) jquery-2.1.1.min.js:3
+GET http://graph.facebook.com/1j123y8hu2i34aaaaui/picture?width=80&height=80 4
+
 	var getPhotoHack = function(user_id) {
 		switch(user_id) {
-			case "541de614290d17c4523b4a49":
+			case "1j123y8hu2i34aaaaui":
 				return "http://212.142.46.137/doh/images/meredith-1.jpg";
-			case "541d8fe11cf0d9fc2140b5bc":
+			case "xhajsdasjiajdas":
 				return "http://212.142.46.137/doh/images/tumblr_static_derek-shepherd-photo.jpg";
-			case "541d8fbd1cf0d9fc2140b5bb":
+			case "1j123y8hu2i34ui":
 				return "http://212.142.46.137/doh/images/293.heigl.katherine.lc.022309.jpg";
 			default:
 				return "http://graph.facebook.com/"+user_id+"/picture";
