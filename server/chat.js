@@ -7,7 +7,7 @@ var setRoutes = function(app) {
 		var userId = ObjectID(req.params.id);
 
 		var collection = app.db.collection('chats');
-		collection.find({recipient: userId}).sort({"_id": 1}).toArray(function(err, results) {
+		collection.find({$or: [{recipient: userId}, {sender: userId}]}).sort({"_id": 1}).toArray(function(err, results) {
 			res.send(results);
 		});
 	});
