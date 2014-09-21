@@ -3,6 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
 	<title>Connect</title>
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
@@ -319,6 +320,7 @@
 				$("#chat-image").attr("src", getPhotoHack(getChatPartner().profile.fb_user_id)+"?width=80&height=80");
 				$("#chatslist").html("");
 				$("#venue_text").html("Select a venue to connect with "+getChatPartner().profile.name);
+				$("#chat_message").val("");
 
 				if(!chatTimer) {
 					chatTimer = setInterval(function() {
@@ -492,7 +494,7 @@
 			</div>
 		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 
@@ -507,7 +509,7 @@
 			<a href="#flight" class="ui-btn">ENTER YOUR FLIGHT NUMBER</a>
 		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 
@@ -521,7 +523,7 @@
 
 		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 
@@ -534,7 +536,7 @@
 			<ul id="matchlist" data-role="listview" data-inset="true"></ul>
 		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 
@@ -558,7 +560,7 @@
 			</div>
  		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 </body>
