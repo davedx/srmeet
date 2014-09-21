@@ -155,7 +155,7 @@
 	};
 
 	var getChatsWith = function(id, callback) {
-		$.getJSON(apiBaseURL + "/chats/"+id, function(jsonData) {
+		$.getJSON(apiBaseURL + "/chats/"+id+"/"+userdata._id, function(jsonData) {
 			callback(jsonData);
 		});
 	};
@@ -241,7 +241,7 @@
 		console.log("pagehide: "+event.target.id);
 		switch(event.target.id){
 			case "match":
-				clearInterval(matchTimer);
+				//clearInterval(matchTimer);
 				break;
 			case "chat":
 				//clearInterval(chatTimer);
