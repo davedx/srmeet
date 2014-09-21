@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Meet&amp;Talk</title>
-	<link rel="shortcut icon" href="favicon.ico">
+	<title>Connect</title>
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
 	<link rel="stylesheet" href="styles/themes/meetandchat.min.css" />
 	<link rel="stylesheet" href="styles/themes/jquery.mobile.icons.min.css" />
@@ -355,28 +355,32 @@
 		background-repeat: no-repeat;
 	}
 	#login {
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		text-align: center;
 	}
 	#profile{
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		color: white;
-		text-align: center;
+		text-align: left;
 	}
 	#flight{
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		color: white;
 	}
 	#match{
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		color: white;
 	}
 	#chat{
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		color: white;
 	}
 	.logo {
 		width: 100%;
+	}
+	.profile-logo{
+    	float:right;
+    	width: 100px;
 	}
 	[data-role=footer] {
 		opacity: 0.5;
@@ -386,8 +390,9 @@
 		text-align: right;
 	}
 	.profile-image {
-		width: 100px;
+		width: 150px;
 		box-shadow: 10px 10px 25px rgba(0,0,0,0.5);
+		float:left;
 	}
 	.controlgroup-textinput{
     padding-top:.22em;
@@ -418,6 +423,7 @@
 	}
 	.chatslist{
 		padding: 20px;
+		
 	}
 	.ui-title{
 		margin: 0 !important;
@@ -429,7 +435,7 @@
 <body>
 	<div data-role="page" id="login">
 		<div role="main" class="ui-content">
-			<img class="logo" src="images/logo_pink.png">
+			<img class="logo" src="images/logo.png">
 			</br>
 			</br>
 			</br>
@@ -446,8 +452,9 @@
 
 	<div data-role="page" id="profile">
 		<div role="main" class="ui-content">
-			<img id="profile-image" src="" class="profile-image" />
-			<h2 id="welcome-message"></h2>
+			<img src="images/logo.png" class="profile-logo">
+			<img id="profile-image" src="" class="profile-image"/>
+			<h2 id="welcome-message" style="margin-top:170px"></h2>
 			<p>Welcome to Meet & Chat</p>
 
 			<p>Connect with other travellers, and share your stories. Meet people at Europe's best airport.</p>
@@ -474,7 +481,8 @@
 	<div data-role="page" id="match">
 		<div role="main" class="ui-content">
 			<div data-role="header">
-				<h1>People at Schiphol</h1>
+				<a href="#" data-icon="back" data-rel="back">Back</a>
+				<h1 style="padding-left: 48px">People at Schiphol</h1>
 			</div>
 			<ul id="matchlist" data-role="listview" data-inset="true"></ul>
 		</div>
@@ -486,9 +494,11 @@
 	<div data-role="page" id="chat">
 		<div role="main" class="ui-content">
 			<div data-role="header">
+				<a href="#" data-icon="back" data-rel="back">Back</a>
 				<h1 id="chat_top">Dave</h1>
+				<!--<img src="http://graph.facebook.com/784378181609010/picture" id="myImage" /> -->
 			</div>
-			<ul id="chatslist" data-role="listview" data-inset="true">
+			<ul id="chatslist" style="background-color:white;color: black;" data-role="listview" data-inset="true">
 			</ul>
      		<input type="text" id="chat_message" />
      		<button id="chat_button" onclick="chatSubmitClicked()" data-theme="b">Send</button>
