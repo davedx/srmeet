@@ -236,7 +236,7 @@
 				var myLikes = {};
 				var mutualMatches = [];
 				$.getJSON(apiBaseURL + "/matches/"+userdata._id, function(jsondata) {
-					console.log(jsondata);
+					//console.log(jsondata);
 					_.each(jsondata,function(m) {
 						if(m.user1 === userdata._id) {
 							myLikes[m.user2] = true;
