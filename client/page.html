@@ -244,7 +244,7 @@
 				clearInterval(matchTimer);
 				break;
 			case "chat":
-				clearInterval(chatTimer);
+				//clearInterval(chatTimer);
 				break;
 		}
 	});
@@ -292,8 +292,7 @@
 			case "chat":
 
 				$("#chat_top").html(getChatPartner().profile.name);
-				var fb_pic = "http://graph.facebook.com/"+getChatPartner().profile.fb_user_id+"/picture";
-				$("#chat_top").style("background-image", "url('"+fb_pic+"')");
+				$("#chat_top").css("background-image", "url(http://graph.facebook.com/"+getChatPartner().profile.fb_user_id+"/picture)");
 				$("#chatslist").html("");
 
 				if(!chatTimer) {
@@ -308,7 +307,6 @@
 									$("#chatslist").append(item);
 								}
 							});
-							partnerName
 						});
 					}, 1000);
 				}
