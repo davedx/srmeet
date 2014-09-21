@@ -2,12 +2,17 @@ var ObjectID = require('mongodb').ObjectID;
 
 var setRoutes = function(app) {
 	// Get chats for a user.
-	app.get('/chats/:id', function (req, res) {
+	app.get('/chats/:user1/:user2', function (req, res) {
 		//console.log("Responding to /chats");
-		var userId = ObjectID(req.params.id);
+		var userId1 = ObjectID(req.params.user1);
+		var userId2 = ObjectID(req.params.user2);
 
 		var collection = app.db.collection('chats');
-		collection.find({$or: [{recipient: userId}, {sender: userId}]}).sort({"_id": 1}).toArray(function(err, results) {
+		collection.find(
+			{$or: [
+				{$and: [{recipient: userId1}, {sender: userId2}]},
+				{$and: [{recipient: userId2}, {sender: userId1}]}
+			]}).sort({"_id": 1}).toArray(function(err, results) {
 			res.send(results);
 		});
 	});
