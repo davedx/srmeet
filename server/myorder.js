@@ -32,7 +32,7 @@ var doRequest = function(options, errorCode, callback) {
 
 var setRoutes = function(app) {
 	// Get chats for a user.
-	app.get('/merchants/:lat_long', function (req, res) {
+	app.get('/merchants', function (req, res) {
 
 		var makeSPR = function() {
 			var timestamp = Date.now();
