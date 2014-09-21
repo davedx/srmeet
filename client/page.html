@@ -327,7 +327,7 @@
 					$("#venue_list").empty();
 					var list = _.first(merchants.results,5);
 					_.each(list, function(val){
-						$("#venue_list").append('<li><a href="#">'+val.name+'</a></li>');
+						$("#venue_list").append('<li><a onclick="chatVenue.call(this,\''+val.name+'\')" href="#">'+val.name+'</a></li>');
 					});
 					$("#venue_list").listview("refresh");
 				})
@@ -345,6 +345,14 @@
 	var chatTimer;
 	var getChatPartner = function() {
 		return chatPartner;
+	};
+
+	var chatVenue = function(v){
+		var message = "Hi, " + getChatPartner().profile.name + " let's meet up at " + v;
+		$("#chat_message").val(message);
+		// sendChatMessage(chatPartner._id, userdata._id, message, function() {
+		// 	console.log("Worked");
+		// });
 	};
 
 	var chatSubmitClicked = function() {
