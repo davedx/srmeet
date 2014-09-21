@@ -355,28 +355,32 @@
 		background-repeat: no-repeat;
 	}
 	#login {
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		text-align: center;
 	}
 	#profile{
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		color: white;
-		text-align: center;
+		text-align: left;
 	}
 	#flight{
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		color: white;
 	}
 	#match{
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		color: white;
 	}
 	#chat{
-		background-color: #ef5ba1;
+		background-color: #00498d;
 		color: white;
 	}
 	.logo {
 		width: 100%;
+	}
+	.profile-logo{
+    	float:right;
+    	width: 100px;
 	}
 	[data-role=footer] {
 		opacity: 0.5;
@@ -386,8 +390,9 @@
 		text-align: right;
 	}
 	.profile-image {
-		width: 100px;
+		width: 150px;
 		box-shadow: 10px 10px 25px rgba(0,0,0,0.5);
+		float:left;
 	}
 	.controlgroup-textinput{
     padding-top:.22em;
@@ -429,7 +434,7 @@
 <body>
 	<div data-role="page" id="login">
 		<div role="main" class="ui-content">
-			<img class="logo" src="images/logo_pink.png">
+			<img class="logo" src="images/logo.png">
 			</br>
 			</br>
 			</br>
@@ -446,8 +451,9 @@
 
 	<div data-role="page" id="profile">
 		<div role="main" class="ui-content">
-			<img id="profile-image" src="" class="profile-image" />
-			<h2 id="welcome-message"></h2>
+			<img src="images/logo.png" class="profile-logo">
+			<img id="profile-image" src="" class="profile-image"/>
+			<h2 id="welcome-message" style="margin-top:170px"></h2>
 			<p>Welcome to Meet & Chat</p>
 			<p>To get in contact with people you bla bla bla... dave write something here please.</p>
 			<a href="#flight" class="ui-btn">ENTER YOUR FLIGHT NUMBER</a>
