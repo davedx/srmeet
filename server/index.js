@@ -6,6 +6,7 @@ var profile = require("./profile");
 var match = require("./match");
 var chat = require("./chat");
 var flights = require("./flights");
+var myorder = require("./myorder");
 
 app.use(bodyParser.json());
 app.use(express.static("../client/"));
@@ -20,6 +21,7 @@ profile(app);
 match(app);
 chat(app);
 flights(app);
+myorder(app);
 
 MongoClient.connect('mongodb://127.0.0.1:27017/sameet', function(err, db) {
 	if(err) throw err;
