@@ -436,6 +436,7 @@
 	}
 	.chatslist{
 		padding: 20px;
+		
 	}
 	.ui-title{
 		margin: 0 !important;
@@ -493,7 +494,8 @@
 	<div data-role="page" id="match">
 		<div role="main" class="ui-content">
 			<div data-role="header">
-				<h1>People at Schiphol</h1>
+				<a href="#" data-icon="back" data-rel="back">Back</a>
+				<h1 style="padding-left: 48px">People at Schiphol</h1>
 			</div>
 			<ul id="matchlist" data-role="listview" data-inset="true"></ul>
 		</div>
@@ -505,9 +507,11 @@
 	<div data-role="page" id="chat">
 		<div role="main" class="ui-content">
 			<div data-role="header">
+				<a href="#" data-icon="back" data-rel="back">Back</a>
 				<h1 id="chat_top">Dave</h1>
+				<!--<img src="http://graph.facebook.com/784378181609010/picture" id="myImage" /> -->
 			</div>
-			<ul id="chatslist" data-role="listview" data-inset="true">
+			<ul id="chatslist" style="background-color:white;color: black;padding-left: 5px" data-role="listview" data-inset="true">
 			</ul>
      		<input type="text" id="chat_message" />
      		<button id="chat_button" onclick="chatSubmitClicked()" data-theme="b">Send</button>

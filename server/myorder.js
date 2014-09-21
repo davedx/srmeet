@@ -24,7 +24,7 @@ var doRequest = function(options, errorCode, callback) {
 		if (!error && response.statusCode == 200) {
 			callback(undefined, JSON.parse(body));
 		} else {
-			console.log(error);
+			console.log("resp: ", response, "err: ", error);
 			callback(errorCode);
 		}
 	});
@@ -32,35 +32,36 @@ var doRequest = function(options, errorCode, callback) {
 
 var setRoutes = function(app) {
 	// Get chats for a user.
-	app.get('/merchants/:lat_long', function (req, res) {
+	app.get('/merchants', function (req, res) {
 
-		var timestamp = Date.now();
+		var makeSPR = function() {
+			var timestamp = Date.now();
 
-		//var signature = BASE64(HMAC_SHA1(privatekey + timestamp + token + appBundleId, privatekey));
-		var signature = HmacSHA1(api_secret + timestamp + currentToken + appBundleId, api_secret);
-		var finalhash = signature.toString(Base64);
-		var safehash = finalhash.replace("+", "-", "g");
-		var safehash = safehash.replace("\/", "_", "g");
-		var safehash = safehash.replace("=", " ", "g").trim();
-		console.log(safehash);
+			var signature = HmacSHA1(api_secret + timestamp + currentToken + appBundleId, api_secret);
+			var finalhash = signature.toString(Base64);
+			var safehash = finalhash.replace("+", "-", "g");
+			var safehash = safehash.replace("\/", "_", "g");
+			var safehash = safehash.replace("=", " ", "g").trim();
 
-		var spr = 'SPR k="'+api_key+'",tm="' + timestamp + '",';
-		if(currentToken) {
-			spr += 't="' + currentToken + '",';
-		}
-		spr += 'b="' + appBundleId + '",s="' + safehash + '",v="2"';
-
-		console.log("SPR: ", spr);
+			var spr = 'SPR k="'+api_key+'",tm="' + timestamp + '",';
+			if(currentToken) {
+				spr += 't="' + currentToken + '",';
+			}
+			spr += 'b="' + appBundleId + '",s="' + safehash + '",v="2"';
+			return spr;
+		};
 
 		var path = "auth/login?phone=+31634796837&deviceId=0F10191CA1BAA97718";
 
 		var options = buildOptions({
 			path: path,
-			spr: spr
+			spr: makeSPR()
 		});
 		doRequest(options, "NO_MERCHANTS", function(err, response) {
 			if(!err) {
-				console.log(response);
+				//console.log(response);
+				currentToken = response.key;
+				console.log("current token = " + currentToken);
 				getMerchants();
 //				res.send(response);
 //				res.send([]);
@@ -70,13 +71,14 @@ var setRoutes = function(app) {
 		});
 
 		function getMerchants() {
-			console.log("Getting merchants in SCHIPHOL RIJK BITCHES");
+			console.log("Getting merchants in SCHIPHOL RIJK");
 			var options = buildOptions({
 				path: "catalog/merchants?location=52.310746,4.768285",
-				spr: spr
+				spr: makeSPR()
 			});
 			doRequest(options, "BAH", function(err, response) {
-				console.log(response);
+				//console.log(response);
+				res.send(response);
 			});
 		}
 
