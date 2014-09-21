@@ -320,6 +320,7 @@
 				$("#chat-image").attr("src", getPhotoHack(getChatPartner().profile.fb_user_id)+"?width=80&height=80");
 				$("#chatslist").html("");
 				$("#venue_text").html("Select a venue to connect with "+getChatPartner().profile.name);
+				$("#chat_message").val("");
 
 				if(!chatTimer) {
 					chatTimer = setInterval(function() {
