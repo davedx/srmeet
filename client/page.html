@@ -3,6 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
 	<title>Connect</title>
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
@@ -17,6 +18,19 @@
 	<script src="javascript/lib/main.js"></script>
 
 	<script type="text/javascript">
+
+	var getPhotoHack = function(user_id) {
+		switch(user_id) {
+			case "1j123y8hu2i34aaaaui":
+				return "http://212.142.46.137/doh/images/meredith-1.jpg";
+			case "xhajsdasjiajdas":
+				return "http://212.142.46.137/doh/images/tumblr_static_derek-shepherd-photo.jpg";
+			case "1j123y8hu2i34ui":
+				return "http://212.142.46.137/doh/images/izzy.jpg";
+			default:
+				return "http://graph.facebook.com/"+user_id+"/picture";
+		}
+	};
 
 	var apiBaseURL = "http://212.142.46.137/doh";
 	var userdata;
@@ -58,7 +72,7 @@
 		        "gender": data.gender,
 		        "age": Math.ceil((Math.random()*20) + 20),
 		        "country": "USA",
-		        "picture_url": "http://graph.facebook.com/"+data.id+"/picture?width=80&height=80"
+		        "picture_url": "http://graph.facebook.com/"+data.id+"/picture"
 		    }
 		});
 		console.log("createUser", url, body);
@@ -116,7 +130,7 @@
 			//pretend everyone with a valid flight is always on the next one
 			//with that flight number.
 			if(!date_time.isAfter()) {
-				date_time.add(1, 'd');
+				date_time.add(36, 'h');
 			}
 
 			return date_time;
@@ -182,6 +196,14 @@
 		});
 	};
 
+	var getMerchants = function(callback){
+		console.log("getMerchants");
+		$.getJSON(apiBaseURL + "/merchants", function(jsondata) {
+			console.log(jsondata);
+			callback && callback(jsondata);
+		})
+	}
+
 	var makeMatch = function(dbid){
 		if($("#match_"+dbid+" .match-state").hasClass("mutual")){
 			getProfiles(function(profiles){
@@ -227,7 +249,7 @@
 						if(m.user2 === userdata._id &&
 							myLikes[m.user1] === true) {
 							mutualMatches.push(m.user1);							
-							$("#match_"+m.user1+" .match-state").text("GO MEET & CHAT");
+							$("#match_"+m.user1+" .match-state").text("CONNECT");
 							$("#match_"+m.user1+" .match-state").addClass("mutual");
 						}
 					});
@@ -262,7 +284,7 @@
 				break;
 			case "profile":
 				getUserByFacebookId(facebookId, function(user){
-					$("#profile-image").attr("src",user.profile.picture_url);
+					$("#profile-image").attr("src", getPhotoHack(user.profile.fb_user_id)+"?width=150&height=150");
 					$("#welcome-message").text("Welcome "+user.profile.name+"!");
 				});
 				break;
@@ -284,7 +306,7 @@
 						if(flightTime && flightTime.isAfter() && val._id !== userdata._id) {
 							var formatted = flightTime.fromNow();
 							var desttext = val.airport ? ('<p>Going to '+val.airport.city+' '+formatted+'</p>') : '';
-							var list = '<li id="match_'+val._id+'"><a onclick="makeMatch.call(this,\''+val._id+'\')"><img class="match-image" src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'<div class="match-state"></div></a></li>';
+							var list = '<li id="match_'+val._id+'"><a onclick="makeMatch.call(this,\''+val._id+'\')"><img class="match-image" src="'+getPhotoHack(val.profile.fb_user_id)+'?width=80&height=80"><h2>'+val.profile.name+'</h2>'+desttext+'<div class="match-state"></div></a></li>';
 							$("#matchlist").append(list);
 						}
 					});
@@ -295,8 +317,9 @@
 			case "chat":
 
 				$("#chat_top").html(getChatPartner().profile.name);
-				$("#chat_top").css("background-image", "url(http://graph.facebook.com/"+getChatPartner().profile.fb_user_id+"/picture)");
+				$("#chat-image").attr("src", getPhotoHack(getChatPartner().profile.fb_user_id)+"?width=80&height=80");
 				$("#chatslist").html("");
+				$("#venue_text").html("Select a venue to connect with "+getChatPartner().profile.name);
 
 				if(!chatTimer) {
 					chatTimer = setInterval(function() {
@@ -313,6 +336,16 @@
 						});
 					}, 1000);
 				}
+
+				getMerchants(function(merchants){
+					$("#venue_list").empty();
+					var list = _.first(merchants.results,5);
+					_.each(list, function(val){
+						$("#venue_list").append('<li><a onclick="chatVenue.call(this,\''+val.name+'\')" href="#">'+val.name+'</a></li>');
+					});
+					$("#venue_list").listview("refresh");
+				})
+				
 				break;
 		}
 	});
@@ -326,6 +359,14 @@
 	var chatTimer;
 	var getChatPartner = function() {
 		return chatPartner;
+	};
+
+	var chatVenue = function(v){
+		var message = "Hi, " + getChatPartner().profile.name + " let's meet up at " + v;
+		$("#chat_message").val(message);
+		// sendChatMessage(chatPartner._id, userdata._id, message, function() {
+		// 	console.log("Worked");
+		// });
 	};
 
 	var chatSubmitClicked = function() {
@@ -351,8 +392,7 @@
 	#chat_top {
 		margin: 10px 10px;
 		text-align: left;
-		padding-left: 80px;
-		background-repeat: no-repeat;
+		padding-left: 160px;
 	}
 	#login {
 		background-color: #00498d;
@@ -428,6 +468,13 @@
 	.ui-title{
 		margin: 0 !important;
 	}
+	#chat-image{
+		width: 40px;
+		height: 40px;
+		position: absolute;
+		top:18px;
+		left:120px;
+	}
 	</style>
 
 </head>
@@ -455,7 +502,7 @@
 			<img src="images/logo.png" class="profile-logo">
 			<img id="profile-image" src="" class="profile-image"/>
 			<h2 id="welcome-message" style="margin-top:170px"></h2>
-			<p>Welcome to Meet & Chat</p>
+			<p>Welcome to Connect at Schiphol</p>
 
 			<p>Connect with other travellers, and share your stories. Meet people at Europe's best airport.</p>
 			<a href="#flight" class="ui-btn">ENTER YOUR FLIGHT NUMBER</a>
@@ -468,6 +515,7 @@
 	<div data-role="page" id="flight">
 		<div role="main" class="ui-content">
 			<div data-role="header">
+				<a href="#" data-icon="back" data-rel="back">Back</a>
 				<h1>Flight number</h1>
 			</div>
 			<ul id="flightlist" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search your flight number..." data-inset="true"></ul>
@@ -496,12 +544,19 @@
 			<div data-role="header">
 				<a href="#" data-icon="back" data-rel="back">Back</a>
 				<h1 id="chat_top">Dave</h1>
-				<!--<img src="http://graph.facebook.com/784378181609010/picture" id="myImage" /> -->
 			</div>
-			<ul id="chatslist" style="background-color:white;color: black;padding-left: 5px" data-role="listview" data-inset="true">
+			<img id="chat-image"/>
+			<ul id="chatslist" style="background-color:white;color: black;padding:15px" data-role="listview" data-inset="true">
 			</ul>
      		<input type="text" id="chat_message" />
      		<button id="chat_button" onclick="chatSubmitClicked()" data-theme="b">Send</button>
+     		<br>
+     		<br>
+     		<div data-role="collapsible" data-collapsed="false">
+			    <h4 id="venue_text">Select a venue</h4>
+			    <ul id="venue_list" data-role="listview">
+			    </ul>
+			</div>
  		</div>
 		<div data-role="footer" data-position="fixed">
 			&copy; Schiphol 2014
