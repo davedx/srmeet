@@ -182,6 +182,14 @@
 		});
 	};
 
+	var getMerchants = function(callback){
+		console.log("getMerchants");
+		$.getJSON(apiBaseURL + "/merchants", function(jsondata) {
+			console.log(jsondata);
+			callback && callback(jsondata);
+		})
+	}
+
 	var makeMatch = function(dbid){
 		if($("#match_"+dbid+" .match-state").hasClass("mutual")){
 			getProfiles(function(profiles){
@@ -313,6 +321,11 @@
 						});
 					}, 1000);
 				}
+
+				getMerchants(function(merchants){
+					
+				})
+				
 				break;
 		}
 	});
