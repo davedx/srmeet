@@ -130,7 +130,7 @@
 			//pretend everyone with a valid flight is always on the next one
 			//with that flight number.
 			if(!date_time.isAfter()) {
-				date_time.add(36, 'h');
+				date_time.add(30, 'h');
 			}
 
 			return date_time;
@@ -236,7 +236,7 @@
 				var myLikes = {};
 				var mutualMatches = [];
 				$.getJSON(apiBaseURL + "/matches/"+userdata._id, function(jsondata) {
-					console.log(jsondata);
+					//console.log(jsondata);
 					_.each(jsondata,function(m) {
 						if(m.user1 === userdata._id) {
 							myLikes[m.user2] = true;
@@ -320,6 +320,7 @@
 				$("#chat-image").attr("src", getPhotoHack(getChatPartner().profile.fb_user_id)+"?width=80&height=80");
 				$("#chatslist").html("");
 				$("#venue_text").html("Select a venue to connect with "+getChatPartner().profile.name);
+				$("#chat_message").val("");
 
 				if(!chatTimer) {
 					chatTimer = setInterval(function() {
@@ -493,7 +494,7 @@
 			</div>
 		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 
@@ -508,7 +509,7 @@
 			<a href="#flight" class="ui-btn">ENTER YOUR FLIGHT NUMBER</a>
 		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 
@@ -522,7 +523,7 @@
 
 		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 
@@ -535,7 +536,7 @@
 			<ul id="matchlist" data-role="listview" data-inset="true"></ul>
 		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 
@@ -559,7 +560,7 @@
 			</div>
  		</div>
 		<div data-role="footer" data-position="fixed">
-			&copy; Schiphol 2014
+			&copy; Such Schiphol Much 2014 Wow
 		</div>
 	</div>
 </body>
