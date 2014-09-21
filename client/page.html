@@ -155,7 +155,7 @@
 	};
 
 	var getChatsWith = function(id, callback) {
-		$.getJSON(apiBaseURL + "/chats/"+id, function(jsonData) {
+		$.getJSON(apiBaseURL + "/chats/"+id+"/"+userdata._id, function(jsonData) {
 			callback(jsonData);
 		});
 	};
@@ -183,7 +183,7 @@
 	};
 
 	var makeMatch = function(dbid){
-		if($("#match_"+dbid).hasClass("mutuallike")){
+		if($("#match_"+dbid+" .match-state").hasClass("mutual")){
 			getProfiles(function(profiles){
 				var profile = _.find(profiles,{_id:dbid});
 				chatPartner = profile;
@@ -218,14 +218,17 @@
 					_.each(jsondata,function(m) {
 						if(m.user1 === userdata._id) {
 							myLikes[m.user2] = true;
-							$("#match_"+m.user2).addClass("mylike");
+							$("#match_"+m.user2+" .match-state").text("AWAITING REPLY");
+							$("#match_"+m.user2+" .match-state").removeClass("mutual");
+							$("#match_"+m.user2+" .match-state").css("opacity","0.5");
 						}
 					});
 					_.each(jsondata,function(m) {
 						if(m.user2 === userdata._id &&
 							myLikes[m.user1] === true) {
-							mutualMatches.push(m.user1);
-							$("#match_"+m.user1).addClass("mutuallike");
+							mutualMatches.push(m.user1);							
+							$("#match_"+m.user1+" .match-state").text("GO MEET & CHAT");
+							$("#match_"+m.user1+" .match-state").addClass("mutual");
 						}
 					});
 				});
@@ -241,7 +244,7 @@
 		console.log("pagehide: "+event.target.id);
 		switch(event.target.id){
 			case "match":
-				clearInterval(matchTimer);
+				//clearInterval(matchTimer);
 				break;
 			case "chat":
 				//clearInterval(chatTimer);
@@ -281,7 +284,7 @@
 						if(flightTime && flightTime.isAfter() && val._id !== userdata._id) {
 							var formatted = flightTime.fromNow();
 							var desttext = val.airport ? ('<p>Going to '+val.airport.city+' '+formatted+'</p>') : '';
-							var list = '<li id="match_'+val._id+'"><a onclick="makeMatch.call(this,\''+val._id+'\')"><img class="match-image" src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'</a></li>';
+							var list = '<li id="match_'+val._id+'"><a onclick="makeMatch.call(this,\''+val._id+'\')"><img class="match-image" src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'<div class="match-state"></div></a></li>';
 							$("#matchlist").append(list);
 						}
 					});
@@ -327,10 +330,20 @@
 
 	var chatSubmitClicked = function() {
 		var message = $("#chat_message").val();
+		$('#chat_message').val("");
 		sendChatMessage(chatPartner._id, userdata._id, message, function() {
 			console.log("Worked");
 		});
 	};
+
+	$(document).ready(function() {
+	    $('#chat_message').keyup(function(event) {
+	        if (event.keyCode == 13) {
+	            $("#chat_button").click();
+	            return false;
+	         }
+	    });
+	});
 
 	</script>
 
@@ -340,18 +353,27 @@
 		text-align: left;
 		padding-left: 80px;
 		background-repeat: no-repeat;
-		background-image: url('http://graph.facebook.com/10152283152681356/picture');
-	}
-	#splash {
-		background-color: #ef5ba1;
-		text-align: center;
 	}
 	#login {
 		background-color: #ef5ba1;
 		text-align: center;
 	}
 	#profile{
+		background-color: #ef5ba1;
+		color: white;
 		text-align: center;
+	}
+	#flight{
+		background-color: #ef5ba1;
+		color: white;
+	}
+	#match{
+		background-color: #ef5ba1;
+		color: white;
+	}
+	#chat{
+		background-color: #ef5ba1;
+		color: white;
 	}
 	.logo {
 		width: 100%;
@@ -365,21 +387,40 @@
 	}
 	.profile-image {
 		width: 100px;
+		box-shadow: 10px 10px 25px rgba(0,0,0,0.5);
 	}
 	.controlgroup-textinput{
     padding-top:.22em;
     padding-bottom:.22em;
   	}
 	.match-image{
-		width: 70px;
-		height: 70px;
+		height: 100%;
 		margin: 5px;
+		margin-top: 16px;
 	}
-	.mutuallike h2{
-		color: red;
+	.match-state{
+		right: 40px;
+		top: 23px;
+		background-color: gray;
+		color: white;
+		padding: 6px;
+		border: 2px solid;
+		border-radius: 10px;
+		opacity: 0;
+		font-size: 10px;
+		font-weight: lighter;
+		text-align: center;
 	}
-	.mylike h2{
-		color: green;
+	.match-state.mutual{
+		background-color: lightblue;
+		color: black;
+		opacity: 1;
+	}
+	.chatslist{
+		padding: 20px;
+	}
+	.ui-title{
+		margin: 0 !important;
 	}
 	</style>
 
@@ -408,8 +449,9 @@
 			<img id="profile-image" src="" class="profile-image" />
 			<h2 id="welcome-message"></h2>
 			<p>Welcome to Meet & Chat</p>
+
 			<p>Connect with other travellers, and share your stories. Meet people at Europe's best airport.</p>
-			<a href="#flight" class="ui-btn">Set your destination</a>
+			<a href="#flight" class="ui-btn">ENTER YOUR FLIGHT NUMBER</a>
 		</div>
 		<div data-role="footer" data-position="fixed">
 			&copy; Schiphol 2014
@@ -419,7 +461,7 @@
 	<div data-role="page" id="flight">
 		<div role="main" class="ui-content">
 			<div data-role="header">
-				<h1>Your destination</h1>
+				<h1>Flight number</h1>
 			</div>
 			<ul id="flightlist" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search your flight number..." data-inset="true"></ul>
 
@@ -432,7 +474,7 @@
 	<div data-role="page" id="match">
 		<div role="main" class="ui-content">
 			<div data-role="header">
-				<h1>Match here</h1>
+				<h1>People at Schiphol</h1>
 			</div>
 			<ul id="matchlist" data-role="listview" data-inset="true"></ul>
 		</div>
@@ -448,13 +490,8 @@
 			</div>
 			<ul id="chatslist" data-role="listview" data-inset="true">
 			</ul>
-
-			<div data-role="fieldcontain">
-	      <fieldset data-role="controlgroup">
-	     		<input type="text" id="chat_message" />
-	     		<button onclick="chatSubmitClicked()" data-theme="b">Send</button>
-	      </fieldset>
-			</div>
+     		<input type="text" id="chat_message" />
+     		<button id="chat_button" onclick="chatSubmitClicked()" data-theme="b">Send</button>
  		</div>
 		<div data-role="footer" data-position="fixed">
 			&copy; Schiphol 2014
