@@ -58,7 +58,7 @@
 		        "gender": data.gender,
 		        "age": Math.ceil((Math.random()*20) + 20),
 		        "country": "USA",
-		        "picture_url": "http://graph.facebook.com/"+data.id+"/picture?width=80&height=80"
+		        "picture_url": "http://graph.facebook.com/"+data.id+"/picture"
 		    }
 		});
 		console.log("createUser", url, body);
@@ -262,7 +262,7 @@
 				break;
 			case "profile":
 				getUserByFacebookId(facebookId, function(user){
-					$("#profile-image").attr("src",user.profile.picture_url);
+					$("#profile-image").attr("src",user.profile.picture_url+"?width=150&height=150");
 					$("#welcome-message").text("Welcome "+user.profile.name+"!");
 				});
 				break;
@@ -284,7 +284,7 @@
 						if(flightTime && flightTime.isAfter() && val._id !== userdata._id) {
 							var formatted = flightTime.fromNow();
 							var desttext = val.airport ? ('<p>Going to '+val.airport.city+' '+formatted+'</p>') : '';
-							var list = '<li id="match_'+val._id+'"><a onclick="makeMatch.call(this,\''+val._id+'\')"><img class="match-image" src="'+val.profile.picture_url+'"><h2>'+val.profile.name+'</h2>'+desttext+'<div class="match-state"></div></a></li>';
+							var list = '<li id="match_'+val._id+'"><a onclick="makeMatch.call(this,\''+val._id+'\')"><img class="match-image" src="'+val.profile.picture_url+'?width=80&height=80"><h2>'+val.profile.name+'</h2>'+desttext+'<div class="match-state"></div></a></li>';
 							$("#matchlist").append(list);
 						}
 					});
@@ -295,7 +295,7 @@
 			case "chat":
 
 				$("#chat_top").html(getChatPartner().profile.name);
-				$("#chat_top").css("background-image", "url(http://graph.facebook.com/"+getChatPartner().profile.fb_user_id+"/picture)");
+				$("#chat_top").css("background-image", "url(http://graph.facebook.com/"+getChatPartner().profile.fb_user_id+"/picture?width=80&height=80)");
 				$("#chatslist").html("");
 
 				if(!chatTimer) {
